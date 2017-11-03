@@ -53,6 +53,7 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\trans}[1]{{#1}^{\top}}
 
+\newcommand{\abs}[1]{\lvert{#1}\rvert}
 \newcommand{\ltwo}[1]{\lVert {#1} \rVert_2}
 \newcommand{\set}{\mathcal}
 \renewcommand{\vec}{\mathbf}
@@ -291,11 +292,10 @@ Combining time with textual features is even more powerful.
 Consider a tweet with the text ``I am at the Taylor Swift concert''
 (or alternatively a video of Taylor Swift performing).
 If we knew the time of the tweet, 
-and we knew when Taylor Swift was performing in different cities,
+and we knew Taylor Swift's concert schedule,
 then we could get a good prediction of the location of the tweet.
 Without knowing the time, however, we cannot say which city the tweet was sent from.
-
-We do not need an external knowledgebase containing the times of Taylor Swift concerts to correctly predict this tweet's location.
+We actually don't even need to know Taylor Swift's concert schedule.
 These concerts have many thousands of attendees, many of whom are tweeting.
 If any of these attendees tweets about Taylor Swift and has geotagging enabled,
 we should be able to use this information to infer that the original tweet was from the same location
@@ -317,19 +317,21 @@ We call each tweet an event $e$ and decompose it into three components:
 \begin{align*}
     %g    &= \text{the gps coordinates} \\ 
     %\ell &= \text{the location (either the location field in the tweet or exact gps coordinates)} \\
-    \ell : \R^2 &= \text{the location (ideally we would constrain this to be on the 2d sphere)} \\
-    d    : \R^m &= \text{document features (constructed from any text/images/video/urls in the tweet)} \\
+    \ell : \R^2 &= \text{the location represented as gps coordinates} \\
+    x    : \R^d &= \text{document features (constructed from any text/images/video/urls in the tweet)} \\
     t    : \R~ &= \text{time}
 \end{align*}
 %Existing approaches model the probability distribution $\cprob{\ell}{d}$.
 %Existing baseline approaches estimate the distribution $\cprob{\ell}{d}$.
-Our goal is to estimate the conditional distribution $\cprob{\ell}{d,t}$.
+Our goal is to estimate the conditional distribution $\cprob{\ell}{x,t}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection {Proposed technique}
 
-If the location is independent of the document and time, then $\cprob{\ell}{d,t} = \prob{\ell}$.
+
+
+If the location is independent of the document and time, then $\cprob{\ell}{x,t} = \prob{\ell}$.
 This can be modeled as a mixture of $n$ isotropic Gaussians.
 That is,
 \begin{equation}
@@ -341,23 +343,39 @@ so around 1000 seems like a reasonable choice of $n$.
 The parameters $w_i$, $\mu_i$, and $\sigma_i$ must be learned from the data.
 
 Next we incorporate a dependence on time.
-A Hawkes process is an appropriate model for $\cprob{\ell}{t}$.
-In a Hawkes process,
-the likelihood of an event at location $\ell$ is high when events have recently happened in nearby locations,
-and low when events have not recently happened nearby.
-Formally,
+Let $k : E \times E \to \R$ be a kernel function that assigns a similarity to two tweets.
+As simple gaussian kernel could be
 \begin{equation}
-    \cprob{\ell}{t} 
-    %\propto
-    =
-    \prob{\ell}\exp(-\lambda(\ell;t))
+    k(e_1,e_2) 
+    = \exp(-\tau\abs{e_1(t) - e_2(t)}^2
+           -\lambda\ltwo{e_1(\ell) - e_2(\ell)}^2)
 \end{equation}
-where $\lambda$ is called the rate function and is given by
+where $\tau$ and $\lambda$ are parameters that control the influence of temporal and spatial distance in the events' similarity.
+We can then define the conditional distribution
 \begin{equation}
-    \label{eq:kernel}
-    \lambda(\ell;t) = \sum_{e} k(\ell,t,e,\theta)
+    \cprob{\ell}{t} = p(\ell)\exp(-\sum_{\substack{\text{events $e'$ s.t.}\\e'(t)<t}} k(e,e'))
+    .
 \end{equation}
-where $k$ is a kernel function that depends on parameter $\theta$.
+
+Finally, we can incorporate a dependence on the textual features simply by updating the kernel to include a dependence on the text.
+
+%A Hawkes process is an appropriate model for $\cprob{\ell}{t}$.
+%In a Hawkes process,
+%the likelihood of an event at location $\ell$ is high when events have recently happened in nearby locations,
+%and low when events have not recently happened nearby.
+%Formally,
+%\begin{equation}
+    %\cprob{\ell}{t} 
+    %%\propto
+    %=
+    %\prob{\ell}\exp(-\lambda(\ell;t))
+%\end{equation}
+%where $\lambda$ is called the rate function and is given by
+%\begin{equation}
+    %\label{eq:kernel}
+    %\lambda(\ell;t) = \sum_{e} k(\ell,t,e,\theta)
+%\end{equation}
+%where $k$ is a kernel function that depends on parameter $\theta$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
