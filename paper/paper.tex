@@ -1,0 +1,516 @@
+\documentclass{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{xcolor}
+\usepackage[inline]{enumitem}
+
+%\usepackage{algorithm}
+%\usepackage[noend]{algpseudocode}
+%\usepackage{algorithmicx}
+%\usepackage{algorithm2e}
+
+%\usepackage[authordate,bibencoding=auto,strict,backend=biber,natbib]{biblatex-chicago}
+\usepackage[round]{natbib}   % omit 'round' option if you prefer square brackets
+\bibliographystyle{plainnat}
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks   = true, %Colours links instead of ugly boxes
+  urlcolor     = blue, %Colour for external hyperlinks
+  linkcolor    = blue, %Colour of internal links
+  citecolor    = blue  %Colour of citations
+}
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{width=7cm,compat=1.8}
+\definecolor{darkgreen}{RGB}{0,127,0}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtheorem{cor}{Corollary}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{defn}{Definition}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\vecspan}{span}
+\DeclareMathOperator*{\affspan}{aff}
+\DeclareMathOperator*{\subG}{subG}
+\DeclareMathOperator*{\tr}{tr}
+\DeclareMathOperator*{\E}{\mathbb{E}}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\trans}[1]{{#1}^{\top}}
+
+\newcommand{\ltwo}[1]{\lVert {#1} \rVert_2}
+\newcommand{\set}{\mathcal}
+\renewcommand{\vec}{\mathbf}
+
+\newcommand{\W}{\mathcal{W}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Y}{\mathcal{Y}}
+\newcommand{\Z}{Z}
+
+\newcommand{\w}{W}
+\newcommand{\what}{\hat\w}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\y}{y}
+
+\newcommand{\loss}{\ell}
+\newcommand{\reg}{r}
+
+%\newcommand{\prob}[1]{\text{Pr}\left({#1}\right)}
+\newcommand{\prob}[1]{p\!\left({#1}\right)}
+\newcommand{\cprob}[2]{\prob{{#1} | {#2}}}
+\newcommand{\normal}[2]{\mathcal{N}({#1},{#2})}
+\newcommand{\eye}{I}
+
+%\newcommand{\plots}[1]{}
+\newcommand{\plots}[1]{#1}
+\newcommand{\ignore}[1]{}
+\newcommand{\fixme}[1]{\textbf{FIXME:} {#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{filecontents}{paper.bib}
+
+@inproceedings{speriosu2010connecting,
+  title={Connecting language and geography with region-topic models},
+  author={Speriosu, Michael and Brown, Travis and Moon, Taesun and Baldridge, Jason and Erk, Katrin},
+  year={2010}
+}
+
+@inproceedings{cheng2010you,
+  title={You are where you tweet: a content-based approach to geo-locating twitter users},
+  author={Cheng, Zhiyuan and Caverlee, James and Lee, Kyumin},
+  booktitle={Proceedings of the 19th ACM international conference on Information and knowledge management},
+  pages={759--768},
+  year={2010},
+  organization={ACM}
+}
+
+@inproceedings{eisenstein2010latent,
+  title={A latent variable model for geographic lexical variation},
+  author={Eisenstein, Jacob and O'Connor, Brendan and Smith, Noah A and Xing, Eric P},
+  booktitle={Proceedings of the 2010 Conference on Empirical Methods in Natural Language Processing},
+  pages={1277--1287},
+  year={2010},
+  organization={Association for Computational Linguistics}
+}
+
+@inproceedings{kinsella2011m,
+  title={I'm eating a sandwich in Glasgow: modeling locations with tweets},
+  author={Kinsella, Sheila and Murdock, Vanessa and O'Hare, Neil},
+  booktitle={Proceedings of the 3rd international workshop on Search and mining user-generated contents},
+  pages={61--68},
+  year={2011},
+  organization={ACM}
+}
+
+@article{leidner2011detecting,
+  title={Detecting geographical references in the form of place names and associated spatial natural language},
+  author={Leidner, Jochen L and Lieberman, Michael D},
+  journal={SIGSPATIAL Special},
+  volume={3},
+  number={2},
+  pages={5--11},
+  year={2011},
+  publisher={ACM}
+}
+
+@inproceedings{hecht2011tweets,
+  title={Tweets from Justin Bieber's heart: the dynamics of the location field in user profiles},
+  author={Hecht, Brent and Hong, Lichan and Suh, Bongwon and Chi, Ed H},
+  booktitle={Proceedings of the SIGCHI conference on human factors in computing systems},
+  pages={237--246},
+  year={2011},
+  organization={ACM}
+}
+
+@inproceedings{li2012towards,
+  title={Towards social user profiling: unified and discriminative influence model for inferring home locations},
+  author={Li, Rui and Wang, Shengjie and Deng, Hongbo and Wang, Rui and Chang, Kevin Chen-Chuan},
+  booktitle={Proceedings of the 18th ACM SIGKDD international conference on Knowledge discovery and data mining},
+  pages={1023--1031},
+  year={2012},
+  organization={ACM}
+}
+
+@inproceedings{ruiz2012correlating,
+  title={Correlating financial time series with micro-blogging activity},
+  author={Ruiz, Eduardo J and Hristidis, Vagelis and Castillo, Carlos and Gionis, Aristides and Jaimes, Alejandro},
+  booktitle={Proceedings of the fifth ACM international conference on Web search and data mining},
+  pages={513--522},
+  year={2012},
+  organization={ACM}
+}
+
+@inproceedings{dredze2013carmen,
+  title={Carmen: A twitter geolocation system with applications to public health},
+  author={Dredze, Mark and Paul, Michael J and Bergsma, Shane and Tran, Hieu},
+  year={2013}
+}
+
+@inproceedings{han2013stacking,
+  title={A Stacking-based Approach to Twitter User Geolocation Prediction.},
+  author={Han, Bo and Cook, Paul and Baldwin, Timothy},
+  year={2013}
+}
+
+@inproceedings{compton2014geotagging,
+  title={Geotagging one hundred million twitter accounts with total variation minimization},
+  author={Compton, Ryan and Jurgens, David and Allen, David},
+  booktitle={Big Data (Big Data), 2014 IEEE International Conference on},
+  pages={393--401},
+  year={2014},
+  organization={IEEE}
+}
+
+@article{graham2014world,
+  title={Where in the world are you? Geolocation and language identification in Twitter},
+  author={Graham, Mark and Hale, Scott A and Gaffney, Devin},
+  journal={The Professional Geographer},
+  volume={66},
+  number={4},
+  pages={568--578},
+  year={2014},
+  publisher={Taylor \& Francis}
+}
+
+@article{mahmud2014home,
+  title={Home location identification of twitter users},
+  author={Mahmud, Jalal and Nichols, Jeffrey and Drews, Clemens},
+  journal={ACM Transactions on Intelligent Systems and Technology (TIST)},
+  volume={5},
+  number={3},
+  pages={47},
+  year={2014},
+  publisher={ACM}
+}
+
+@article{han2014text,
+  title={Text-based twitter user geolocation prediction},
+  author={Han, Bo and Cook, Paul and Baldwin, Timothy},
+  journal={Journal of Artificial Intelligence Research},
+  volume={49},
+  pages={451--500},
+  year={2014}
+}
+
+@article{wiley2014pharmaceutical,
+  title={Pharmaceutical drugs chatter on online social networks},
+  author={Wiley, Matthew T and Jin, Canghong and Hristidis, Vagelis and Esterling, Kevin M},
+  journal={Journal of biomedical informatics},
+  volume={49},
+  pages={245--254},
+  year={2014},
+  publisher={Elsevier}
+}
+
+@inproceedings{he2015hawkestopic,
+  title={Hawkestopic: A joint model for network inference and topic modeling from text-based cascades},
+  author={He, Xinran and Rekatsinas, Theodoros and Foulds, James and Getoor, Lise and Liu, Yan},
+  booktitle={International Conference on Machine Learning},
+  pages={871--880},
+  year={2015}
+}
+
+@article{rahimi2015twitter,
+  title={Twitter user geolocation using a unified text and network prediction model},
+  author={Rahimi, Afshin and Cohn, Trevor and Baldwin, Timothy},
+  journal={arXiv preprint arXiv:1506.08259},
+  year={2015}
+}
+
+@article{jurgens2015geolocation,
+  title={Geolocation Prediction in Twitter Using Social Networks: A Critical Analysis and Review of Current Practice.},
+  author={Jurgens, David and Finethy, Tyler and McCorriston, James and Xu, Yi Tian and Ruths, Derek},
+  year={2015}
+}
+
+@inproceedings{dredze2016geolocation,
+  title={Geolocation for Twitter: Timing Matters.},
+  author={Dredze, Mark and Osborne, Miles and Kambadur, Prabhanjan},
+  year={2016}
+}
+
+@article{wu2017link,
+    author={Yu, Wenchao and ... },
+    title={Link Prediction with Spatial and Temporal Consistency in Dynamic Networks},
+    journal={IJCAI},
+    year={2017}
+}
+
+@inproceedings{yu2017temporally,
+  title={Temporally Factorized Network Modeling for Evolutionary Network Analysis},
+  author={Yu, Wenchao and Aggarwal, Charu C and Wang, Wei},
+  booktitle={Proceedings of the Tenth ACM International Conference on Web Search and Data Mining},
+  pages={455--464},
+  year={2017},
+  organization={ACM}
+}
+
+\end{filecontents}
+\immediate\write18{bibtex paper}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Twitter Geolocation}
+\author{Mike Izbicki}
+\begin{document}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Problem description}
+
+Existing work on tweet geolocation uses only text features to predict location.
+I want to use time as well.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Intuitive motivation}
+
+Time by itself is a good predictor of tweet location.
+People are more likely to tweet during daytime hours,
+and daytime is determined by longitude.
+Combining time with textual features is even more powerful.
+
+Consider a tweet with the text ``I am at the Taylor Swift concert''
+(or alternatively a video of Taylor Swift performing).
+If we knew the time of the tweet, 
+and we knew when Taylor Swift was performing in different cities,
+then we could get a good prediction of the location of the tweet.
+Without knowing the time, however, we cannot say which city the tweet was sent from.
+
+We do not need an external knowledgebase containing the times of Taylor Swift concerts to correctly predict this tweet's location.
+These concerts have many thousands of attendees, many of whom are tweeting.
+If any of these attendees tweets about Taylor Swift and has geotagging enabled,
+we should be able to use this information to infer that the original tweet was from the same location
+(since it happened at the same time).
+
+The example of a Taylor Swift concert happens over a narrow time scale and in a small location.
+Other examples of space/time dependencies occur at larger scale.
+For example: 
+(i) natural disasters such as floods can affect multiple cities over many weeks;
+(ii) normal weather conditions (such as snow, rain, or heat) affect latitudinal bands over the course of seasons;
+and (iii) elections can affect entire cities, states, and countries for months.
+We would like a system that can automatically identify these space/time dependencies and use them to predict tweet location.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection {Formal problem statement}
+
+We call each tweet an event $e$ and decompose it into three components: 
+\begin{align*}
+    %g    &= \text{the gps coordinates} \\ 
+    %\ell &= \text{the location (either the location field in the tweet or exact gps coordinates)} \\
+    \ell : \R^2 &= \text{the location (ideally we would constrain this to be on the 2d sphere)} \\
+    d    : \R^m &= \text{document features (constructed from any text/images/video/urls in the tweet)} \\
+    t    : \R~ &= \text{time}
+\end{align*}
+%Existing approaches model the probability distribution $\cprob{\ell}{d}$.
+%Existing baseline approaches estimate the distribution $\cprob{\ell}{d}$.
+Our goal is to estimate the conditional distribution $\cprob{\ell}{d,t}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection {Proposed technique}
+
+If the location is independent of the document and time, then $\cprob{\ell}{d,t} = \prob{\ell}$.
+This can be modeled as a mixture of $n$ isotropic Gaussians.
+That is,
+\begin{equation}
+    \prob{\ell} = \sum_{i=1}^n w_i\normal{\mu_i}{\eye\sigma_i}
+    .
+\end{equation}
+There are 488 cities in the worldwith at least 1 million people, 
+so around 1000 seems like a reasonable choice of $n$.
+The parameters $w_i$, $\mu_i$, and $\sigma_i$ must be learned from the data.
+
+Next we incorporate a dependence on time.
+A Hawkes process is an appropriate model for $\cprob{\ell}{t}$.
+In a Hawkes process,
+the likelihood of an event at location $\ell$ is high when events have recently happened in nearby locations,
+and low when events have not recently happened nearby.
+Formally,
+\begin{equation}
+    \cprob{\ell}{t} 
+    %\propto
+    =
+    \prob{\ell}\exp(-\lambda(\ell;t))
+\end{equation}
+where $\lambda$ is called the rate function and is given by
+\begin{equation}
+    \label{eq:kernel}
+    \lambda(\ell;t) = \sum_{e} k(\ell,t,e,\theta)
+\end{equation}
+where $k$ is a kernel function that depends on parameter $\theta$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Computational notes}
+
+\begin{enumerate}
+    \item
+        The summation in \eqref{eq:kernel} is over all tweets,
+        which is obviously infeasible.
+        Any reasonable choice of kernel will have a large value only for tweets nearby in space/time.
+        Therefore distant points can be pruned from the summation to improve computation time.
+
+    \item
+        As formulated, the features can be computed completely independently from modeling of the space/time relations.
+        It may be possible to improve the performance by jointly optimizing the feature selection algorithms with the space/time objectives.
+
+    \item
+        Modeling the locations $\ell$ as points in $\R^2$ induces distortions,
+        because the data is actually gps coordinates on a sphere.
+        Restricting the data to lie on the sphere would be better,
+        but I'm not sure how to enforce that type of constraint.
+        It might be easier (and more accurate!) to learn the topology of the underlying space from the data.
+        This could help incorporate non-gps location data as well,
+        and make the system usable on non-twitter data.
+        For example, we could predict the university/funding agency for a piece of research in a citation social network.
+
+    \item
+        We should be able to use a semisupervised learning procedure to use all the tweets without location data.
+
+\end{enumerate}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Reference notes}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Twitter applications}
+
+\citet{cheng2010you} uses a probabilistic framework to generate city-level location using only tweet text.
+Uses a naive bayes model, but for some reason uses a sum instead of a product (bad math?).
+Introduces several smoothing mechanisms to help with the sparsity of tweet data.
+
+\citet{kinsella2011m} predicts the location of individual tweets and a user's home location.
+Provides a simple probabilistic model: 
+For each location, estimate a distribution of terms associated with that location.
+Does not incorporate time.
+
+\citet{li2012towards} uses a probabilistic framework to generate city-level location using the content of the tweet and the network of tweet replies.
+Does not use a gazetteer or the underlying social graph.
+This seems like a straightforward extension of \citet{cheng2010you}.
+
+\citet{dredze2013carmen} introduces the Carmen system for twitter geolocation.
+Then it to improve influenza surveillance.
+
+\citet{han2013stacking} predicts the city of a twitter user using both text and metadeta using stacking.
+I believe this is the first paper to consider the effect of semantic shift in geolocation.
+They show that user declared location metadeta is more sensitive to temporal change than the message text.
+
+\citet{graham2014world} survey of methods for geographers.
+
+\citet{mahmud2014home} identifies the home location of a user rather than the location of an individual tweet.
+Incorporates temporal information in the tweets to identify when a user is travelling.
+\fixme{Has good twitter geolocation references that I don't have elsewhere.}
+Uses an ensemble classifier with a gazeteer as one of the key features.
+Lots of manual constructions and NLP-based preprocessing.
+Hierarchical model that first predicts a general geographic region (e.g. timezone or state), then predicts the city.
+
+\citet{han2014text} has many new ideas.
+Introduce a multilingual dataset and the first methods for geolocating non-English tweets.
+They use a hierarchical model that first determines the language,
+then selects a model appropriate for the language.
+Make heavy use of twitter metadata (e.g. tweet time) to determine location.
+Perform a test on time where they evaluate their model on data collected 1 year after the training data, and show a significant performance loss.
+Studies the privacy implications of geolocation.
+
+\citet{compton2014geotagging} propose a simple convex problem for geolocating twitter users to city level accuracy using the social network graph only.
+Whereas previous methods rely on local heuristics, their convex program uses global properties of the social graph.
+Has lots of empirical results showing accuracy of self reported locations, location homophily among friends, and typical travel habits of twitter users.
+
+\citet{rahimi2015twitter} uses both twitter text and the network graph for geolocation, but does not include time.
+\fixme{Has good twitter geolocation references that I don't have elsewhere.}
+Good experiments with good datasets.
+Uses kd-tree for faster search.
+Spatial labels are discretized over an adaptive grid based on the number of users in the region.
+The @-mention information is used to build an undirected graph between users.
+They convert the graph into a ``collapsed graph'', and there's lots of subtleties here about how they handle the train/test split and edges that pass between the two sets.
+Uses Model Adsorption over the graph to predict geolocations within the test set, 
+with two key modification:
+(i) removing celebrity nodes from the network graph (lets them scale to larger networks)
+and (ii) incorporating textual information as ``dongle nodes''.
+
+\citet{dredze2016geolocation} studies time's effect on geolocation of individual tweets to the city level.
+Demonstrates cyclical temporal effects on geolocation accuracy and rapid drops in accuracy as test data moves beyond the training data's time period.
+They show that this temporal drift can be countered with modest online model updates.
+Introduces a particularly large new dataset.
+Used vowpal wabbit to learn the model.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Twitter analytics}
+
+\citet{hecht2011tweets} measures the accuracy of the location field in twitter user profiles.
+
+\citet{he2015hawkestopic} uses Hawkes process to model the social graph of Twitter,
+but does not apply the idea to geolocation.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Generic applications}
+
+\citet{eisenstein2010latent} presents a multilevel generative model that resents jointly about latent topics and geographical regions.
+Highly cited, and probably the right foundation for my graphical model.
+Does not incorporate time or model the geometry of the regions.
+Uses mean field variational inference.
+\fixme{Think about this more.}
+
+\citet{speriosu2010connecting} models language and geography outside the Twitter context for toponym resolution (disambiguating place names).
+Uses a graphical model based on probabalistic topic models,
+where regions of the earth are represented by different topics.
+Inference is done with a collapsed Gibbs sampler.
+Does not incorporate the Earth's spherical geometry or any distance relations between locations.
+
+\citet{wu2017link} proposes a model for predicting the generation of new links in social networks. 
+Uses a convex optimization problem with closed form solution.
+
+\citet{yu2017temporally} uses matrix factorization to predict the formation of new edges in social networks.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Less important work}
+
+\citet{leidner2011detecting} provides a tutorial on methods for parsing geographical references in natural language.
+
+\citet{jurgens2015geolocation} surveys existing methods.
+They show a large performance gap between real world performance and the idealized laboratory-performance reported in the compared methods' publications.
+\fixme{Review their references}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Other applications of social network analysis}
+
+\citet{ruiz2012correlating} uses tweets to predict financial markets.
+
+\citet{wiley2014pharmaceutical} uses tweets to measure the effectiveness and user satisfaction of new drugs.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\bibliography{paper}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
