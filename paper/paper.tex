@@ -2,7 +2,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage{geometry}
+\usepackage[margin=0.75in]{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -68,6 +68,13 @@
 \newcommand{\x}{\mathbf{x}}
 \newcommand{\y}{y}
 
+\newcommand{\dist}{d}
+\newcommand{\Dist}{\mathcal D}
+\newcommand{\kernel}{k}
+\newcommand{\loc}{_{\textit{loc}}}
+\newcommand{\gmap}{_{\textit{gmap}}}
+\newcommand{\gcirc}{_\textit{gcirc}}
+
 \newcommand{\loss}{\ell}
 \newcommand{\reg}{r}
 
@@ -85,6 +92,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{filecontents}{paper.bib}
+
+@article{vincenty1975direct,
+  title={Direct and inverse solutions of geodesics on the ellipsoid with application of nested equations},
+  author={Vincenty, Thaddeus},
+  journal={Survey review},
+  volume={23},
+  number={176},
+  pages={88--93},
+  year={1975},
+  publisher={Taylor \& Francis}
+}
 
 @inproceedings{speriosu2010connecting,
   title={Connecting language and geography with region-topic models},
@@ -262,6 +280,68 @@
   organization={ACM}
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@inproceedings{severyn2015unitn,
+  title={Unitn: Training deep convolutional neural network for twitter sentiment classification},
+  author={Severyn, Aliaksei and Moschitti, Alessandro},
+  booktitle={Proceedings of the 9th international workshop on semantic evaluation (SemEval 2015)},
+  pages={464--469},
+  year={2015}
+}
+
+@inproceedings{zhang2015character,
+  title={Character-level convolutional networks for text classification},
+  author={Zhang, Xiang and Zhao, Junbo and LeCun, Yann},
+  booktitle={Advances in neural information processing systems},
+  pages={649--657},
+  year={2015}
+}
+
+@inproceedings{weyand2016planet,
+  title={Planet-photo geolocation with convolutional neural networks},
+  author={Weyand, Tobias and Kostrikov, Ilya and Philbin, James},
+  booktitle={European Conference on Computer Vision},
+  pages={37--55},
+  year={2016},
+  organization={Springer}
+}
+
+@article{jozefowicz2016exploring,
+  title={Exploring the limits of language modeling},
+  author={Jozefowicz, Rafal and Vinyals, Oriol and Schuster, Mike and Shazeer, Noam and Wu, Yonghui},
+  journal={arXiv preprint arXiv:1602.02410},
+  year={2016}
+}
+
+@article{dhingra2016tweet2vec,
+  title={Tweet2vec: Character-based distributed representations for social media},
+  author={Dhingra, Bhuwan and Zhou, Zhong and Fitzpatrick, Dylan and Muehl, Michael and Cohen, William W},
+  journal={arXiv preprint arXiv:1605.03481},
+  year={2016}
+}
+
+@inproceedings{kim2016character,
+  title={Character-Aware Neural Language Models.},
+  author={Kim, Yoon and Jernite, Yacine and Sontag, David and Rush, Alexander M},
+  year={2016}
+}
+
+@article{chung2016character,
+  title={A character-level decoder without explicit segmentation for neural machine translation},
+  author={Chung, Junyoung and Cho, Kyunghyun and Bengio, Yoshua},
+  journal={arXiv preprint arXiv:1603.06147},
+  year={2016}
+}
+
+@inproceedings{conneau2017very,
+  title={Very deep convolutional networks for text classification},
+  author={Conneau, Alexis and Schwenk, Holger and Barrault, Lo{\"\i}c and Lecun, Yann},
+  booktitle={Proceedings of the 15th Conference of the European Chapter of the Association for Computational Linguistics: Volume 1, Long Papers},
+  volume={1},
+  pages={1107--1116},
+  year={2017}
+}
 \end{filecontents}
 \immediate\write18{bibtex paper}
 
@@ -271,7 +351,210 @@
 \author{Mike Izbicki}
 \begin{document}
 
-\maketitle
+%\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Problem Overview}
+
+Previous work focuses on learning a parameterized model for tweet location.
+The advantages of these methods are:
+\begin{enumerate*}[label=(\arabic*)]
+    \item the resulting models are simple, and
+    \item the models can be trained and deployed on low-power devices.
+\end{enumerate*}
+The disadvantages are:
+\begin{enumerate}
+    \item These methods can model recurring space/time interactions 
+        (e.g. patterns caused by timezone differences and weekend/nonweekend behavioral patterns), 
+        but they cannot handle one time outlier events such as natural disasters or entertainment events.
+    %\item They provide point estimates a tweet's location rather than a distribution of possible locations.
+    \item Experiments by \citet{mahmud2014home} and \citet{dredze2016geolocation} show that the models do not generalize well to unseen time periods.
+\end{enumerate}
+I propose a nonparametric approach to geolocation that should improve these disadvantages.
+The tradeoff is that the model is more complex and not deployable on low-power devices.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Proposed Solution}
+
+Let $\{e_i\}_{i=1}^n$ be the set of observed tweets,
+and $e$ be a new tweet not in the database.
+Then define the nonparametric distribution over $e$ 
+\begin{equation}
+    \prob e
+    \propto
+    %\frac 1 n 
+    \sum_{i=1}^n \exp\left(-\dist_\theta(e,e_i)^2\right)
+    ,
+\end{equation}
+where $\dist_\theta$ is a distance metric between two tweets that depends on parameter vector $\theta$.
+If we let $e(\ell)$ denote the tweet $e$ updated to have location $\ell$,
+then the distribution of the tweet's location is given by
+\begin{equation}
+    \prob {e(\ell)} 
+    \propto
+    %\frac 1 n 
+    \sum_{i=1}^n \exp\left(-\dist_\theta(e(\ell),e_i)^2\right)
+    ,
+\end{equation}
+and the maximum likelihood point estimate of the tweet's location is
+\begin{equation}
+    \label{eq:hatell}
+    \hat\ell
+    =
+    \argmax_{\ell} 
+    \sum_{i=1}^n \exp\left(-\dist_\theta(e(\ell),e_i)^2\right)
+    .
+\end{equation}
+The quality of the estimate $\hat\ell$ is affected by three factors:
+\begin{enumerate}
+    \item \emph{The number of tweets in the database.}
+        Standard results in nonparametric distributions show that as $n\to\infty$, 
+        the distribution $\prob{e}$ will approach the true underlying distribution.
+        %Since the underlying distribution is highly complex, 
+        %many samples will be needed to get a reasonable approximation.
+        %Fortunately, we have many tweets available to us,
+%
+        The downside of this strategy is that the summations above are summations over the entire database.
+        This is not practical, so the summation will need to be approximated.
+        There are many good metric data structures that can restrict the summation to only the most relevant portions of the space.
+
+    \item \emph{The family of distance metrics $\dist_\theta$.}
+        The distance metric needs to tie information about a tweet's location to information about the other features in a tweet.
+        There are many possible metric families,
+        and finding the optimal one is likely a difficult challenge.
+
+        A simple approach is to use an ``ensemble of metrics.''
+        Let $\{d^{(i)}\}_{i=1}^m$ be a set of $m$ metrics.
+        Then define the Mahalanobis distance
+        \begin{equation}
+            \label{eq:mahalanobis}
+            \dist_\theta(e_1,e_2) ^2
+            =
+            \trans{
+            \begin{pmatrix}
+                \dist^{(1)}(e_1,e_2) \\
+                \dist^{(2)}(e_1,e_2) \\
+                \vdots \\
+                \dist^{(m)}(e_1,e_2) \\
+            \end{pmatrix}
+            }
+            \theta
+            \begin{pmatrix}
+                \dist^{(1)}(e_1,e_2) \\
+                \dist^{(2)}(e_1,e_2) \\
+                \vdots \\
+                \dist^{(m)}(e_1,e_2) \\
+            \end{pmatrix}
+        \end{equation}
+        %where $A : \R^{m\times m}$ is the parameter vector $\theta$ that is to be learned.
+        where $\theta$ is a $m\times m$ matrix that needs to be estimated from the data.
+
+        The ensemble should include several metrics related to gps coordinates 
+        (e.g. the geodesic distance \citep{vincenty1975direct}, the google maps distance),
+        time 
+        (e.g. total distance in time, and the distance in time mod hourly, daily, weekly, monthly, and yearly intervals),
+        social graph distances
+        (e.g. total number of hops in a friendship graph),
+        and any features of the tweet itself.
+
+        There are two possible drawbacks of a large ensemble.
+        First, a larger ensemble will increase the computational burden of computing distances.
+        This can possibly be ameliorated by a pruning strategy that only evaluates the more expensive distances after the cheaper ones if it is actually necessary.
+        Second, more metrics increases the number of parameters, increasing the possiblity of overfitting.
+        The number of available tweets is so large, however, that this seems unlikely for a linear Mahalinobis distance.
+
+        %These ensemble metrics can be extended by:
+
+    \item \emph{The quality of the estimated parameter vector $\theta$.}
+        %We can solve for $\hat\theta$ using the formula
+        A good parameter vector $\hat\theta$ will maximize the likelihood that
+        \begin{equation}
+            \label{eq:hattheta}
+            \hat\theta
+            =
+            \argmax_{\theta} 
+            \sum_{i=1}^n 
+            \sum_{j=1}^{i-1}
+            \exp\left(-\dist_\theta(e_i,e_j)^2\right)
+            .
+        \end{equation}
+        This can be solved with an SGD procedure.
+        Using only a small sample of the data should be sufficient.
+        %For the Mahalanobis metric above,
+        %this optimization is convex.
+        %In general, however, for other metrics, it need not be.
+        %An important decision will be the choice of regularizer for $\theta$.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\newpage
+\section{Research Questions}
+
+\noindent
+Applied questions
+\begin{enumerate}
+    %\item \textbf{How do we efficiently perform the sums?}
+    \item Does jointly training the feature space and metric parameters improve performance?
+    \item Many possible choices of metric to experiment with to determine which is best for different applications.
+        For example, how should we incorporate information related to ``location'' vs ``gps'' fields of the tweet?
+    \item Which regularizer should be chosen to optimize $\hat\theta$ in \eqref{eq:hattheta}?
+        Is there a better loss function to use?
+    \item Queries in this framework can be significantly more complicated:
+        \begin{enumerate}
+        \item We can easily in incorporate constraints into the queries.
+            For example: Given that I know the tweet came from the midwest,
+            which city was it most likely to come from?
+        \item Given that a tweet came from a particular location,
+            what time was it most likely tweeted?
+            What user mostly likely sent the tweet?
+        \item
+            Generate a tweet that is likely to have been sent from location X at time Y.
+            (This requires that the metrics in the ensemble have a generative semantics.)
+        \end{enumerate}
+\end{enumerate}
+
+\noindent
+Theoretical questions:
+\begin{enumerate}
+    \item \emph{Nonconvex optimization.}
+        The optimization in \eqref{eq:hatell} is nonconvex.
+        Finding a unique global optimum, however, is not likely to be important for practitioners.
+        Instead, reporting several representative solutions will likely be more useful.
+        These solutions should:
+        \begin{enumerate}
+            \item not get stuck in ``small'' local optima, and
+            \item represent all the largest modes in the distribution.
+        \end{enumerate}
+        What is the best way to optimize under these constraints?
+
+    \item \emph{Metric ensembles.}
+        The theoretical properties of ensembles of metrics like proposed in \eqref{eq:mahalanobis} have not been explicitly studied before.
+        \begin{enumerate}
+            \item How does the dimension of the ``submetrics'' influence the dimension of the resulting ensembled metric?
+                It is likely that each metric will have ``different dimensions at different scales,''
+                and how do we incorporate this information to improve runtime bounds on queries?
+            \item What are the best ways to ensemble the metrics? 
+                \begin{enumerate}
+                    \item Other $L_p$ combinations can be used besides $L_2$.
+                    \item The matrix $\theta$ could be replaced by a higher order tensor to capture more complicated relationships between the submetrics.
+                    \item We can kernelize the Mahalanobis distance to create a nonlinear family of metrics.
+                    \item Using parameterized metrics as the base metrics naturally results in a ``deep'' metric learning problem.
+                \end{enumerate}
+            \item Can we develop metric data structures specifically tuned for ensemble metrics?
+                \begin{enumerate}
+                    \item Can we efficiently add/delete/modify metrics in the ensemble without recreating the data structure?
+                    \item Can we query using only a portion of the metrics in the ensemble?
+                    \item Can we support database style queries distributed over multiple machines? 
+                \end{enumerate}
+        \end{enumerate}
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -329,8 +612,43 @@ Our goal is to estimate the conditional distribution $\cprob{\ell}{x,t}$.
 
 \subsection {Proposed technique}
 
+I propose a nonparametric model for estimating the density.
+Specifically, 
+\begin{equation}
+    \label{eq:nonparam}
+    %\prob{e} = \frac 1 n \sum_{i=1}^n k(e,e_i)
+    \prob{e} = \frac 1 n \sum_{i=1}^n \exp(-\dist(e,e_i)^2)
+\end{equation}
+where $\dist$ is a metric distance that describes the similarity of two tweets.
+Learning the model will consist of setting parameters in the distance function.
+The main challenge of large scale nonparametric models is that the summation in \eqref{eq:nonparam} is over the entire data set.
+A clever metric data structure will be needed so that only a small fraction of the data will need to be searched.
 
+Many metrics can be defined between tweets,
+and each metric will determine a corresponding probability distribution.
+The simplest metrics for location estimation ignore all the information in the tweets except the location.
+The most obvious distance function is to use the great circle distance $\dist\gcirc$ between two gps coordinates.
+The obvious formula contains numerical instabilities,
+and so Vincenty's formula should be used instead \citep{vincenty1975direct}.
+A bandwidth parameter would need to be estimated from the data.
+%More powerful distance functions would take into account the rate that information can travel between two locations.
+%We can define the google maps distance $\dist\gmap$ to be the length of time that google maps says it takes to drive between two locations.
+%This distance is more likely to be too expensive to compute;
+%and while it may be more accurate than $\dist\gcirc$,
+%it is unlikely to be the best distance measure possible.
+%Ideally, we would use a metric learning algorithm to achieve the best possible metric.
 
+I think a learned metric would be a good way to associate textual and spatial features.
+If $\Dist$ is a family of metrics and $\loss$ a loss function,
+then the training procedure solves
+\begin{equation}
+    \hat\dist = \argmin_{\dist\in\Dist} \sum_{e_1,e_2\in E} \loss(\dist(e_1,e_2))
+    .
+\end{equation}
+As in the testing procedure, evaluating the sum is computationally expensive and clever data structures are needed to compute it efficiently.
+The efficacy of the method will be determined by the choice of distance family $\Dist$.
+
+\ignore{
 If the location is independent of the document and time, then $\cprob{\ell}{x,t} = \prob{\ell}$.
 This can be modeled as a mixture of $n$ isotropic Gaussians.
 That is,
@@ -358,6 +676,7 @@ We can then define the conditional distribution
 \end{equation}
 
 Finally, we can incorporate a dependence on the textual features simply by updating the kernel to include a dependence on the text.
+}
 
 %A Hawkes process is an appropriate model for $\cprob{\ell}{t}$.
 %In a Hawkes process,
@@ -379,6 +698,7 @@ Finally, we can incorporate a dependence on the textual features simply by updat
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\ignore{
 \subsection{Computational notes}
 
 \begin{enumerate}
@@ -406,6 +726,7 @@ Finally, we can incorporate a dependence on the textual features simply by updat
         We should be able to use a semisupervised learning procedure to use all the tweets without location data.
 
 \end{enumerate}
+}
 
 
 
@@ -417,27 +738,26 @@ Finally, we can incorporate a dependence on the textual features simply by updat
 
 \subsection{Twitter applications}
 
-\citet{cheng2010you} uses a probabilistic framework to generate city-level location using only tweet text.
-Uses a naive bayes model, but for some reason uses a sum instead of a product (bad math?).
+\citet{cheng2010you} uses a probabilistic framework to generate city-level user home location using only tweet text.
+Introduces a naive bayes model, but for some reason uses a sum instead of a product (bad math?).
+Shows that this model does poorly,
+and introduces a 'local words' weighting of the naive model to improve performance.
 Introduces several smoothing mechanisms to help with the sparsity of tweet data.
+They only consider tweets in the contiguous US.
 
 \citet{kinsella2011m} predicts the location of individual tweets and a user's home location.
 Provides a simple probabilistic model: 
 For each location, estimate a distribution of terms associated with that location.
 Does not incorporate time.
+A straightforward generalization of \citet{cheng2010you} to tweet location instead of user location.
 
 \citet{li2012towards} uses a probabilistic framework to generate city-level location using the content of the tweet and the network of tweet replies.
 Does not use a gazetteer or the underlying social graph.
 This seems like a straightforward extension of \citet{cheng2010you}.
 
-\citet{dredze2013carmen} introduces the Carmen system for twitter geolocation.
-Then it to improve influenza surveillance.
-
 \citet{han2013stacking} predicts the city of a twitter user using both text and metadeta using stacking.
 I believe this is the first paper to consider the effect of semantic shift in geolocation.
 They show that user declared location metadeta is more sensitive to temporal change than the message text.
-
-\citet{graham2014world} survey of methods for geographers.
 
 \citet{mahmud2014home} identifies the home location of a user rather than the location of an individual tweet.
 Incorporates temporal information in the tweets to identify when a user is travelling.
@@ -482,8 +802,15 @@ Used vowpal wabbit to learn the model.
 
 \citet{hecht2011tweets} measures the accuracy of the location field in twitter user profiles.
 
+\citet{dredze2013carmen} introduces the Carmen system for twitter geolocation.
+Then use it to improve influenza surveillance.
+Carmen does not do prediction of location from text,
+but instead only measures accuracy of the various location fields.
+
 \citet{he2015hawkestopic} uses Hawkes process to model the social graph of Twitter,
 but does not apply the idea to geolocation.
+
+\citet{graham2014world} survey of geolocation methods for geographers.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -523,6 +850,25 @@ They show a large performance gap between real world performance and the idealiz
 \citet{ruiz2012correlating} uses tweets to predict financial markets.
 
 \citet{wiley2014pharmaceutical} uses tweets to measure the effectiveness and user satisfaction of new drugs.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Deep learning}
+
+\citet{kim2016character} proposes using character level CNNs, RNNs, and Highway Networks for language translation.
+\citet{chung2016character} also proposes character level RNNs and highway nets for translation.
+\citet{jozefowicz2016exploring} is a generic classification paper for character level text processing.  
+Uses a combination of CNNs and RNNs, and a hierarchical softmax which might be useful for locations.
+
+\citet{dhingra2016tweet2vec} creates a vector space model of tweets using a character level recurrent GRU network.
+\citet{severyn2015unitn} use a word level CNN for sentiment classification on tweets.
+
+\citet{conneau2017very} use resnet like connections to create very deep character cnns for text classification.
+\citet{zhang2015character} use a smaller depth character CNN, which is what I've implemented so far.
+
+\citet{weyand2016planet} do geolocation of photos using image CNNs.
+They divide the globe into 26263 regions, and use a xentropy loss over those regions.
+Regions are of different sizes so that they all contain approximately the same number of photos.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
