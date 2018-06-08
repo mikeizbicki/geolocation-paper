@@ -451,15 +451,14 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Twitter Geolocation}
-\author{Mike Izbicki, \fixme{...}}
+\title{Geolocating Tweets in any Language at any Location}
+\author{\fixme{authors}}
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
     We consider the problem of geolocating tweets based on their message contents.
-    We incorporate recent machine learning advances in convolutional neural networks and multitask learning.
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -472,8 +471,7 @@ Our contributions include:
     \item
         Our method requires no preprocessing.
     \item
-        A new method for automatically generating features.
-        Modern machine learning methods.
+        A new method for generating features at the character level.
     \item
         Our method can output gps coordinates and take advantage of the non-Euclidean geometry of the Earth's surface.
     \item
@@ -802,6 +800,7 @@ It is defined as
 
 \newpage
 \appendix
+\ignore{
 \section{Languages and Day of Week}
 \noindent\input{img/day-en}
 
@@ -844,6 +843,7 @@ It is defined as
 \noindent\input{img/day-vi}
 
 \noindent\input{img/day-th}
+}
 
 \section{Languages and Time of Day}
 \noindent\input{img/hr-ar}
