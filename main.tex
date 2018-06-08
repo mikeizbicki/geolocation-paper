@@ -50,6 +50,8 @@
 \DeclareMathOperator*{\tr}{tr}
 \DeclareMathOperator*{\E}{\mathbb{E}}
 
+\newcommand{\str}[1]{\texttt{#1}}
+
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\trans}[1]{{#1}^{\top}}
@@ -450,7 +452,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{Twitter Geolocation}
-\author{Mike Izbicki}
+\author{Mike Izbicki, \fixme{...}}
 \begin{document}
 
 \maketitle
@@ -470,9 +472,7 @@ Our contributions include:
     \item
         Our method requires no preprocessing.
     \item
-        First paper to propose nonlinear models for geolocation.
-    \item
-        A new method for generating features.
+        A new method for automatically generating features.
         Modern machine learning methods.
     \item
         Our method can output gps coordinates and take advantage of the non-Euclidean geometry of the Earth's surface.
@@ -481,10 +481,31 @@ Our contributions include:
     \item
         An online learning framework that is more natural for twitter than the batch frameworks previously proposed.
     \item
+        \fixme{todo}
         A method for visualizing the important features that causes a tweet to be located in a particular location.
 \end{enumerate}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Identifying tweet location vs user location}
+
+\begin{figure}
+    \input{img/country}
+    \input{img/lang}
+    \caption{Most tweets are neither located in the United States nor in English,
+    but prior work focuses on these two special cases.}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Problems with using word features}
+
+\begin{description}
+    \item[English]. 
+        Example of \str{York} vs \str{New York}.  
+        Spelling patterns like \str{color} vs \str{colour} and \str{theater} vs \str{theatre}.
+    \item[German]. Lots of compound words.
+    \item[Spanish]. Verb conjugations for informal 2nd person are different in different countries.
+    \item[Arabic]. Conjugations differ.
+\end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The prediction models}
@@ -769,11 +790,270 @@ It is defined as
         \draw[them] (mp4.east) -- (mp4b) |- (tp1.east);
 
     \end{tikzpicture}
-    \caption{The general model framework.}
+    \caption{The general model framework. \fixme{}}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Results}
+
+\newpage
+\appendix
+\section{Languages and Day of Week}
+\noindent\input{img/day-en}
+
+\noindent\input{img/day-ar}
+
+\noindent\input{img/day-es}
+
+\noindent\input{img/day-fr}
+
+\noindent\input{img/day-in}
+
+\noindent\input{img/day-tl}
+
+\noindent\input{img/day-tr}
+
+\noindent\input{img/day-ja}
+
+\noindent\input{img/day-ko}
+
+\noindent\input{img/day-pt}
+
+\noindent\input{img/day-zh}
+
+\noindent\input{img/day-und}
+
+\noindent\input{img/day-de}
+
+\noindent\input{img/day-nl}
+
+\noindent\input{img/day-cs}
+
+\noindent\input{img/day-da}
+
+\noindent\input{img/day-el}
+
+\noindent\input{img/day-pl}
+
+\noindent\input{img/day-ru}
+
+\noindent\input{img/day-vi}
+
+\noindent\input{img/day-th}
+
+\section{Languages and Time of Day}
+\noindent\input{img/hr-ar}
+
+\noindent\input{img/hr-en}
+
+\noindent\input{img/hr-es}
+
+\noindent\input{img/hr-fr}
+
+\noindent\input{img/hr-in}
+
+\noindent\input{img/hr-tl}
+
+\noindent\input{img/hr-tr}
+
+\noindent\input{img/hr-ja}
+
+\noindent\input{img/hr-ko}
+
+\noindent\input{img/hr-pt}
+
+\noindent\input{img/hr-zh}
+
+\noindent\input{img/hr-und}
+
+\noindent\input{img/hr-de}
+
+\noindent\input{img/hr-nl}
+
+\noindent\input{img/hr-cs}
+
+\noindent\input{img/hr-da}
+
+\noindent\input{img/hr-el}
+
+\noindent\input{img/hr-pl}
+
+\noindent\input{img/hr-ru}
+
+\noindent\input{img/hr-vi}
+
+\noindent\input{img/hr-th}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\section{Reference notes}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Languages}
+
+\citet{zaidan2014arabic} Arabic dialects.
+
+\citet{refaee2014arabic} Arabic with twitter.
+
+\citet{mohammad2016translation} translation alters sentiment.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Twitter applications}
+
+\citet{cheng2010you} uses a probabilistic framework to generate city-level user home location using only tweet text.
+Introduces a naive bayes model, but for some reason uses a sum instead of a product (bad math?).
+Shows that this model does poorly,
+and introduces a 'local words' weighting of the naive model to improve performance.
+Introduces several smoothing mechanisms to help with the sparsity of tweet data.
+They only consider tweets in the contiguous US.
+
+\citet{kinsella2011m} predicts the location of individual tweets and a user's home location.
+Provides a simple probabilistic model: 
+For each location, estimate a distribution of terms associated with that location.
+Does not incorporate time.
+A straightforward generalization of \citet{cheng2010you} to tweet location instead of user location.
+
+\citet{li2012towards} uses a probabilistic framework to generate city-level location using the content of the tweet and the network of tweet replies.
+Does not use a gazetteer or the underlying social graph.
+This seems like a straightforward extension of \citet{cheng2010you}.
+
+\citet{han2013stacking} predicts the city of a twitter user using both text and metadeta using stacking.
+I believe this is the first paper to consider the effect of semantic shift in geolocation.
+They show that user declared location metadeta is more sensitive to temporal change than the message text.
+
+\citet{mahmud2014home} identifies the home location of a user rather than the location of an individual tweet.
+Incorporates temporal information in the tweets to identify when a user is travelling.
+\fixme{Has good twitter geolocation references that I don't have elsewhere.}
+Uses an ensemble classifier with a gazeteer as one of the key features.
+Lots of manual constructions and NLP-based preprocessing.
+Hierarchical model that first predicts a general geographic region (e.g. timezone or state), then predicts the city.
+
+\citet{han2014text} has many new ideas.
+Introduce a multilingual dataset and the first methods for geolocating non-English tweets.
+They use a hierarchical model that first determines the language,
+then selects a model appropriate for the language.
+Make heavy use of twitter metadata (e.g. tweet time) to determine location.
+Perform a test on time where they evaluate their model on data collected 1 year after the training data, and show a significant performance loss.
+Studies the privacy implications of geolocation.
+
+\citet{compton2014geotagging} propose a simple convex problem for geolocating twitter users to city level accuracy using the social network graph only.
+Whereas previous methods rely on local heuristics, their convex program uses global properties of the social graph.
+Has lots of empirical results showing accuracy of self reported locations, location homophily among friends, and typical travel habits of twitter users.
+
+\citet{rahimi2015twitter} uses both twitter text and the network graph for geolocation, but does not include time.
+\fixme{Has good twitter geolocation references that I don't have elsewhere.}
+Good experiments with good datasets.
+Uses kd-tree for faster search.
+Spatial labels are discretized over an adaptive grid based on the number of users in the region.
+The @-mention information is used to build an undirected graph between users.
+They convert the graph into a ``collapsed graph'', and there's lots of subtleties here about how they handle the train/test split and edges that pass between the two sets.
+Uses Model Adsorption over the graph to predict geolocations within the test set, 
+with two key modification:
+(i) removing celebrity nodes from the network graph (lets them scale to larger networks)
+and (ii) incorporating textual information as ``dongle nodes''.
+
+\citet{dredze2016geolocation} studies time's effect on geolocation of individual tweets to the city level.
+Demonstrates cyclical temporal effects on geolocation accuracy and rapid drops in accuracy as test data moves beyond the training data's time period.
+They show that this temporal drift can be countered with modest online model updates.
+Introduces a particularly large new dataset.
+Used vowpal wabbit to learn the model.
+
+\citet{duong2016near} does regression to predict the gps coordinates without taking into account the geometry of the earth.
+Uses matrix factorization of a bag-of-words type model.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Twitter analytics}
+
+\citet{hecht2011tweets} measures the accuracy of the location field in twitter user profiles.
+
+\citet{dredze2013carmen} introduces the Carmen system for twitter geolocation.
+Then use it to improve influenza surveillance.
+Carmen does not do prediction of location from text,
+but instead only measures accuracy of the various location fields.
+
+\citet{he2015hawkestopic} uses Hawkes process to model the social graph of Twitter,
+but does not apply the idea to geolocation.
+
+\citet{graham2014world} survey of geolocation methods for geographers.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Emojis}
+
+\citet{park2013emoticon} studies emoticon usage in the first three years of the twitter platform.
+They show, for example, that vertical emoticons are indicative of asian cultures and horizontal emoticons of european cultures.
+
+\citet{lu2016learning} show that emoji usage varies around the world on smart phone SMS messages using a keyboard app.
+
+\citet{ljubevsic2016global} shows that emoji usage can be used to predict tweet location.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Generic applications}
+
+\citet{eisenstein2010latent} presents a multilevel generative model that resents jointly about latent topics and geographical regions.
+Highly cited, and probably the right foundation for my graphical model.
+Does not incorporate time or model the geometry of the regions.
+Uses mean field variational inference.
+\fixme{Think about this more.}
+
+\citet{speriosu2010connecting} models language and geography outside the Twitter context for toponym resolution (disambiguating place names).
+Uses a graphical model based on probabalistic topic models,
+where regions of the earth are represented by different topics.
+Inference is done with a collapsed Gibbs sampler.
+Does not incorporate the Earth's spherical geometry or any distance relations between locations.
+
+\citet{wu2017link} proposes a model for predicting the generation of new links in social networks. 
+Uses a convex optimization problem with closed form solution.
+
+\citet{yu2017temporally} uses matrix factorization to predict the formation of new edges in social networks.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Less important work}
+
+\citet{leidner2011detecting} provides a tutorial on methods for parsing geographical references in natural language.
+
+\citet{jurgens2015geolocation} surveys existing methods.
+They show a large performance gap between real world performance and the idealized laboratory-performance reported in the compared methods' publications.
+\fixme{Review their references}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Other applications of social network analysis}
+
+\citet{ruiz2012correlating} uses tweets to predict financial markets.
+
+\citet{wiley2014pharmaceutical} uses tweets to measure the effectiveness and user satisfaction of new drugs.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Deep learning}
+
+\citet{kim2016character} proposes using character level CNNs, RNNs, and Highway Networks for language translation.
+\citet{chung2016character} also proposes character level RNNs and highway nets for translation.
+\citet{jozefowicz2016exploring} is a generic classification paper for character level text processing.  
+Uses a combination of CNNs and RNNs, and a hierarchical softmax which might be useful for locations.
+
+\citet{dhingra2016tweet2vec} creates a vector space model of tweets using a character level recurrent GRU network.
+\citet{severyn2015unitn} use a word level CNN for sentiment classification on tweets.
+
+\citet{conneau2017very} use resnet like connections to create very deep character cnns for text classification.
+\citet{zhang2015character} use a smaller depth character CNN, which is what I've implemented so far.
+
+\citet{weyand2016planet} do geolocation of photos using image CNNs.
+They divide the globe into 26263 regions, and use a xentropy loss over those regions.
+Regions are of different sizes so that they all contain approximately the same number of photos.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \ignore{
 \section{Problem Overview}
@@ -1149,209 +1429,6 @@ Finally, we can incorporate a dependence on the textual features simply by updat
 
 \end{enumerate}
 }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Experiments}
-
-\begin{figure}
-    \input{img/country}
-    \input{img/lang}
-    \caption{blurp}
-\end{figure}
-
-\newpage
-\appendix
-\section{Languages and Time of Day}
-\noindent\input{img/ar}
-
-\noindent\input{img/en}
-
-\noindent\input{img/es}
-
-\noindent\input{img/fr}
-
-\noindent\input{img/in}
-
-\noindent\input{img/tl}
-
-\noindent\input{img/tr}
-
-\noindent\input{img/ja}
-
-\noindent\input{img/ko}
-
-\noindent\input{img/pt}
-
-\noindent\input{img/zh}
-
-\noindent\input{img/und}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\newpage
-\section{Reference notes}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Languages}
-
-\citet{zaidan2014arabic} Arabic dialects.
-
-\citet{refaee2014arabic} Arabic with twitter.
-
-\citet{mohammad2016translation} translation alters sentiment.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Twitter applications}
-
-\citet{cheng2010you} uses a probabilistic framework to generate city-level user home location using only tweet text.
-Introduces a naive bayes model, but for some reason uses a sum instead of a product (bad math?).
-Shows that this model does poorly,
-and introduces a 'local words' weighting of the naive model to improve performance.
-Introduces several smoothing mechanisms to help with the sparsity of tweet data.
-They only consider tweets in the contiguous US.
-
-\citet{kinsella2011m} predicts the location of individual tweets and a user's home location.
-Provides a simple probabilistic model: 
-For each location, estimate a distribution of terms associated with that location.
-Does not incorporate time.
-A straightforward generalization of \citet{cheng2010you} to tweet location instead of user location.
-
-\citet{li2012towards} uses a probabilistic framework to generate city-level location using the content of the tweet and the network of tweet replies.
-Does not use a gazetteer or the underlying social graph.
-This seems like a straightforward extension of \citet{cheng2010you}.
-
-\citet{han2013stacking} predicts the city of a twitter user using both text and metadeta using stacking.
-I believe this is the first paper to consider the effect of semantic shift in geolocation.
-They show that user declared location metadeta is more sensitive to temporal change than the message text.
-
-\citet{mahmud2014home} identifies the home location of a user rather than the location of an individual tweet.
-Incorporates temporal information in the tweets to identify when a user is travelling.
-\fixme{Has good twitter geolocation references that I don't have elsewhere.}
-Uses an ensemble classifier with a gazeteer as one of the key features.
-Lots of manual constructions and NLP-based preprocessing.
-Hierarchical model that first predicts a general geographic region (e.g. timezone or state), then predicts the city.
-
-\citet{han2014text} has many new ideas.
-Introduce a multilingual dataset and the first methods for geolocating non-English tweets.
-They use a hierarchical model that first determines the language,
-then selects a model appropriate for the language.
-Make heavy use of twitter metadata (e.g. tweet time) to determine location.
-Perform a test on time where they evaluate their model on data collected 1 year after the training data, and show a significant performance loss.
-Studies the privacy implications of geolocation.
-
-\citet{compton2014geotagging} propose a simple convex problem for geolocating twitter users to city level accuracy using the social network graph only.
-Whereas previous methods rely on local heuristics, their convex program uses global properties of the social graph.
-Has lots of empirical results showing accuracy of self reported locations, location homophily among friends, and typical travel habits of twitter users.
-
-\citet{rahimi2015twitter} uses both twitter text and the network graph for geolocation, but does not include time.
-\fixme{Has good twitter geolocation references that I don't have elsewhere.}
-Good experiments with good datasets.
-Uses kd-tree for faster search.
-Spatial labels are discretized over an adaptive grid based on the number of users in the region.
-The @-mention information is used to build an undirected graph between users.
-They convert the graph into a ``collapsed graph'', and there's lots of subtleties here about how they handle the train/test split and edges that pass between the two sets.
-Uses Model Adsorption over the graph to predict geolocations within the test set, 
-with two key modification:
-(i) removing celebrity nodes from the network graph (lets them scale to larger networks)
-and (ii) incorporating textual information as ``dongle nodes''.
-
-\citet{dredze2016geolocation} studies time's effect on geolocation of individual tweets to the city level.
-Demonstrates cyclical temporal effects on geolocation accuracy and rapid drops in accuracy as test data moves beyond the training data's time period.
-They show that this temporal drift can be countered with modest online model updates.
-Introduces a particularly large new dataset.
-Used vowpal wabbit to learn the model.
-
-\citet{duong2016near} does regression to predict the gps coordinates without taking into account the geometry of the earth.
-Uses matrix factorization of a bag-of-words type model.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Twitter analytics}
-
-\citet{hecht2011tweets} measures the accuracy of the location field in twitter user profiles.
-
-\citet{dredze2013carmen} introduces the Carmen system for twitter geolocation.
-Then use it to improve influenza surveillance.
-Carmen does not do prediction of location from text,
-but instead only measures accuracy of the various location fields.
-
-\citet{he2015hawkestopic} uses Hawkes process to model the social graph of Twitter,
-but does not apply the idea to geolocation.
-
-\citet{graham2014world} survey of geolocation methods for geographers.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Emojis}
-
-\citet{park2013emoticon} studies emoticon usage in the first three years of the twitter platform.
-They show, for example, that vertical emoticons are indicative of asian cultures and horizontal emoticons of european cultures.
-
-\citet{lu2016learning} show that emoji usage varies around the world on smart phone SMS messages using a keyboard app.
-
-\citet{ljubevsic2016global} shows that emoji usage can be used to predict tweet location.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Generic applications}
-
-\citet{eisenstein2010latent} presents a multilevel generative model that resents jointly about latent topics and geographical regions.
-Highly cited, and probably the right foundation for my graphical model.
-Does not incorporate time or model the geometry of the regions.
-Uses mean field variational inference.
-\fixme{Think about this more.}
-
-\citet{speriosu2010connecting} models language and geography outside the Twitter context for toponym resolution (disambiguating place names).
-Uses a graphical model based on probabalistic topic models,
-where regions of the earth are represented by different topics.
-Inference is done with a collapsed Gibbs sampler.
-Does not incorporate the Earth's spherical geometry or any distance relations between locations.
-
-\citet{wu2017link} proposes a model for predicting the generation of new links in social networks. 
-Uses a convex optimization problem with closed form solution.
-
-\citet{yu2017temporally} uses matrix factorization to predict the formation of new edges in social networks.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Less important work}
-
-\citet{leidner2011detecting} provides a tutorial on methods for parsing geographical references in natural language.
-
-\citet{jurgens2015geolocation} surveys existing methods.
-They show a large performance gap between real world performance and the idealized laboratory-performance reported in the compared methods' publications.
-\fixme{Review their references}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Other applications of social network analysis}
-
-\citet{ruiz2012correlating} uses tweets to predict financial markets.
-
-\citet{wiley2014pharmaceutical} uses tweets to measure the effectiveness and user satisfaction of new drugs.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Deep learning}
-
-\citet{kim2016character} proposes using character level CNNs, RNNs, and Highway Networks for language translation.
-\citet{chung2016character} also proposes character level RNNs and highway nets for translation.
-\citet{jozefowicz2016exploring} is a generic classification paper for character level text processing.  
-Uses a combination of CNNs and RNNs, and a hierarchical softmax which might be useful for locations.
-
-\citet{dhingra2016tweet2vec} creates a vector space model of tweets using a character level recurrent GRU network.
-\citet{severyn2015unitn} use a word level CNN for sentiment classification on tweets.
-
-\citet{conneau2017very} use resnet like connections to create very deep character cnns for text classification.
-\citet{zhang2015character} use a smaller depth character CNN, which is what I've implemented so far.
-
-\citet{weyand2016planet} do geolocation of photos using image CNNs.
-They divide the globe into 26263 regions, and use a xentropy loss over those regions.
-Regions are of different sizes so that they all contain approximately the same number of photos.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
