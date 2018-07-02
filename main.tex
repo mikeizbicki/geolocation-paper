@@ -1,8 +1,18 @@
-\documentclass{article}
+%\documentclass{article}
+\documentclass[sigconf,10pt]{acmart}
+
+\setcopyright{rightsretained}
+%\acmDOI{10.475/123_4}
+%\acmISBN{123-4567-24-567/08/06}
+\acmConference[WOODSTOCK'97]{ACM Woodstock conference}{July 1997}{El Paso, Texas USA}
+%\acmYear{1997}
+%\copyrightyear{2016}
+%\acmArticle{4}
+%\acmPrice{15.00}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage[margin=0.75in]{geometry}
+%\usepackage[margin=0.75in]{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -18,8 +28,8 @@
 %\usepackage{algorithm2e}
 
 %\usepackage[authordate,bibencoding=auto,strict,backend=biber,natbib]{biblatex-chicago}
-\usepackage[round]{natbib}   % omit 'round' option if you prefer square brackets
-\bibliographystyle{plainnat}
+%\usepackage[round]{natbib}   % omit 'round' option if you prefer square brackets
+%\bibliographystyle{plainnat}
 
 \usepackage{hyperref}
 \hypersetup{
@@ -40,7 +50,6 @@
 \newtheorem{cor}{Corollary}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
-\newtheorem{defn}{Definition}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -51,6 +60,7 @@
 \DeclareMathOperator*{\E}{\mathbb{E}}
 
 \newcommand{\str}[1]{\texttt{#1}}
+\newcommand{\defn}[1]{\textit{#1}}
 
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\R}{\mathbb{R}}
@@ -94,10 +104,12 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newcommand{\uniloc}{\textsc{UniLoc}}
+
 \newcommand{\tweetdata}[1]{{\texttt{#1}~}}
 \newcommand{\place        }{\tweetdata{place}}
 \newcommand{\pseudoplace  }{\tweetdata{pseudo-place}}
-\newcommand{\country      }{\tweetdata{country}}
+\renewcommand{\country      }{\tweetdata{country}}
 \newcommand{\geo          }{\tweetdata{geo}}
 
 \newcommand{\lata}{\text{lat}_1}
@@ -111,6 +123,85 @@
 
 \usepackage{filecontents}
 \begin{filecontents}{main.bib}
+
+@article{guy1991contextual,
+  title={Contextual conditioning in variable lexical phonology},
+  author={Guy, Gregory R},
+  journal={Language variation and change},
+  volume={3},
+  number={2},
+  pages={223--239},
+  year={1991},
+  publisher={Cambridge University Press}
+}
+
+@article{fung1998extracting,
+  title={Extracting key terms from Chinese and Japanese texts},
+  author={Fung, Pascale},
+  journal={Computer Processing of Oriental Languages},
+  volume={12},
+  number={1},
+  pages={99--121},
+  year={1998}
+}
+
+@article{treiman2000dialect,
+  title={Dialect and authography: Some differences between American and British spellers.},
+  author={Treiman, Rebecca and Barry, Christopher},
+  journal={Journal of Experimental Psychology: Learning, Memory, and Cognition},
+  volume={26},
+  number={6},
+  pages={1423},
+  year={2000},
+  publisher={American Psychological Association}
+}
+
+@article{tagliamonte2005new,
+  title={New perspectives on an ol'variable:(t, d) in British English},
+  author={Tagliamonte, Sali and Temple, Rosalind},
+  journal={Language Variation and Change},
+  volume={17},
+  number={3},
+  pages={281--302},
+  year={2005},
+  publisher={Cambridge University Press}
+}
+
+@incollection{huyen2008hybrid,
+  title={A hybrid approach to word segmentation of Vietnamese texts},
+  author={Huyen, Nguyen Thi Minh and Roussanaly, Azim and Vinh, H{\^o} Tuong and others},
+  booktitle={Language and Automata Theory and Applications},
+  pages={240--249},
+  year={2008},
+  publisher={Springer}
+}
+
+@inproceedings{hays2008im2gps,
+  title={IM2GPS: estimating geographic information from a single image},
+  author={Hays, James and Efros, Alexei A},
+  booktitle={Computer Vision and Pattern Recognition, 2008. CVPR 2008. IEEE Conference on},
+  pages={1--8},
+  year={2008},
+  organization={IEEE}
+}
+
+@inproceedings{crandall2009mapping,
+  title={Mapping the world's photos},
+  author={Crandall, David J and Backstrom, Lars and Huttenlocher, Daniel and Kleinberg, Jon},
+  booktitle={Proceedings of the 18th international conference on World wide web},
+  pages={761--770},
+  year={2009},
+  organization={ACM}
+}
+
+@inproceedings{sakaki2010earthquake,
+  title={Earthquake shakes Twitter users: real-time event detection by social sensors},
+  author={Sakaki, Takeshi and Okazaki, Makoto and Matsuo, Yutaka},
+  booktitle={Proceedings of the 19th international conference on World wide web},
+  pages={851--860},
+  year={2010},
+  organization={ACM}
+}
 
 @inproceedings{speriosu2010connecting,
   title={Connecting language and geography with region-topic models},
@@ -134,6 +225,12 @@
   pages={1277--1287},
   year={2010},
   organization={Association for Computational Linguistics}
+}
+
+@article{conover2011political,
+  title={Political polarization on twitter.},
+  author={Conover, Michael and Ratkiewicz, Jacob and Francisco, Matthew R and Gon{\c{c}}alves, Bruno},
+  year={2011}
 }
 
 @inproceedings{kinsella2011m,
@@ -165,6 +262,24 @@
   organization={ACM}
 }
 
+@inproceedings{klein2012detection,
+  title={Detection and extracting of emergency knowledge from twitter streams},
+  author={Klein, Bernhard and Laiseca, Xabier and Casado-Mansilla, Diego and L{\'o}pez-de-Ipi{\~n}a, Diego and Nespral, Alejandro Prada},
+  booktitle={International Conference on Ubiquitous Computing and Ambient Intelligence},
+  pages={462--469},
+  year={2012},
+  organization={Springer}
+}
+
+@inproceedings{lui2012langid,
+  title={langid. py: An off-the-shelf language identification tool},
+  author={Lui, Marco and Baldwin, Timothy},
+  booktitle={Proceedings of the ACL 2012 system demonstrations},
+  pages={25--30},
+  year={2012},
+  organization={Association for Computational Linguistics}
+}
+
 @article{han2012geolocation,
   title={Geolocation prediction in social media data by finding location indicative words},
   author={Han, Bo and Cook, Paul and Baldwin, Timothy},
@@ -191,6 +306,14 @@
   organization={ACM}
 }
 
+@inproceedings{eisenstein2013phonological,
+  title={Phonological factors in social media writing},
+  author={Eisenstein, Jacob},
+  booktitle={Proceedings of the Workshop on Language Analysis in Social Media},
+  pages={11--19},
+  year={2013}
+}
+
 @inproceedings{schulz2013multi,
   title={A Multi-Indicator Approach for Geolocalization of Tweets.},
   author={Schulz, Axel and Hadjakos, Aristotelis and Paulheim, Heiko and Nachtwey, Johannes},
@@ -207,6 +330,61 @@
   title={A Stacking-based Approach to Twitter User Geolocation Prediction.},
   author={Han, Bo and Cook, Paul and Baldwin, Timothy},
   year={2013}
+}
+
+@article{gonccalves2014crowdsourcing,
+  title={Crowdsourcing dialect characterization through Twitter},
+  author={Gon{\c{c}}alves, Bruno and S{\'a}nchez, David},
+  journal={PloS one},
+  volume={9},
+  number={11},
+  pages={e112074},
+  year={2014},
+  publisher={Public Library of Science}
+}
+
+@techreport{antenucci2014using,
+  title={Using social media to measure labor market flows},
+  author={Antenucci, Dolan and Cafarella, Michael and Levenstein, Margaret and R{\'e}, Christopher and Shapiro, Matthew D},
+  year={2014},
+  institution={National Bureau of Economic Research}
+}
+
+@article{widener2014using,
+  title={Using geolocated Twitter data to monitor the prevalence of healthy and unhealthy food references across the US},
+  author={Widener, Michael J and Li, Wenwen},
+  journal={Applied Geography},
+  volume={54},
+  pages={189--197},
+  year={2014},
+  publisher={Elsevier}
+}
+
+@article{barbera2014birds,
+  title={Birds of the same feather tweet together: Bayesian ideal point estimation using Twitter data},
+  author={Barber{\'a}, Pablo},
+  journal={Political Analysis},
+  volume={23},
+  number={1},
+  pages={76--91},
+  year={2014},
+  publisher={Oxford University Press}
+}
+
+@article{paul2014twitter,
+  title={Twitter improves influenza forecasting},
+  author={Paul, Michael J and Dredze, Mark and Broniatowski, David},
+  journal={PLoS currents},
+  volume={6},
+  publisher={Public Library of Science}
+}
+
+@inproceedings{hollenstein2014compilation,
+  title={Compilation of a Swiss German dialect corpus and its application to PoS tagging},
+  author={Hollenstein, Nora and Aepli, No{\"e}mi},
+  booktitle={Proceedings of the First Workshop on Applying NLP Tools to Similar Languages, Varieties and Dialects},
+  pages={85--94},
+  year={2014}
 }
 
 @inproceedings{refaee2014arabic,
@@ -278,6 +456,44 @@
   publisher={Elsevier}
 }
 
+@article{wang2015transfer,
+  title={Transfer learning for speech and language processing},
+  author={Wang, Dong and Zheng, Thomas Fang},
+  journal={arXiv preprint arXiv:1511.06066},
+  year={2015}
+}
+
+@article{llorente2015social,
+  title={Social media fingerprints of unemployment},
+  author={Llorente, Alejandro and Garcia-Herranz, Manuel and Cebrian, Manuel and Moro, Esteban},
+  journal={PloS one},
+  volume={10},
+  number={5},
+  pages={e0128692},
+  year={2015},
+  publisher={Public Library of Science}
+}
+
+@article{santillana2015combining,
+  title={Combining search, social media, and traditional data sources to improve influenza surveillance},
+  author={Santillana, Mauricio and Nguyen, Andr{\'e} T and Dredze, Mark and Paul, Michael J and Nsoesie, Elaine O and Brownstein, John S},
+  journal={PLoS computational biology},
+  volume={11},
+  number={10},
+  pages={e1004513},
+  year={2015},
+  publisher={Public Library of Science}
+}
+
+@inproceedings{ahmed2015lexical,
+  title={Lexical normalisation of twitter data},
+  author={Ahmed, Bilal},
+  booktitle={Science and Information Conference (SAI), 2015},
+  pages={326--328},
+  year={2015},
+  organization={IEEE}
+}
+
 @inproceedings{he2015hawkestopic,
   title={Hawkestopic: A joint model for network inference and topic modeling from text-based cascades},
   author={He, Xinran and Rekatsinas, Theodoros and Foulds, James and Getoor, Lise and Liu, Yan},
@@ -297,6 +513,68 @@
   title={Geolocation Prediction in Twitter Using Social Networks: A Critical Analysis and Review of Current Practice.},
   author={Jurgens, David and Finethy, Tyler and McCorriston, James and Xu, Yi Tian and Ruths, Derek},
   year={2015}
+}
+
+@article{huang2016understanding,
+  title={Understanding US regional linguistic variation with Twitter data analysis},
+  author={Huang, Yuan and Guo, Diansheng and Kasakoff, Alice and Grieve, Jack},
+  journal={Computers, Environment and Urban Systems},
+  volume={59},
+  pages={244--255},
+  year={2016},
+  publisher={Elsevier}
+}
+
+@article{nguyen2016leveraging,
+  title={Leveraging geotagged Twitter data to examine neighborhood happiness, diet, and physical activity},
+  author={Nguyen, Quynh C and Kath, Suraj and Meng, Hsien-Wen and Li, Dapeng and Smith, Ken R and VanDerslice, James A and Wen, Ming and Li, Feifei},
+  journal={Applied Geography},
+  volume={73},
+  pages={77--88},
+  year={2016},
+  publisher={Elsevier}
+}
+
+@inproceedings{weyand2016planet,
+  title={Planet-photo geolocation with convolutional neural networks},
+  author={Weyand, Tobias and Kostrikov, Ilya and Philbin, James},
+  booktitle={European Conference on Computer Vision},
+  pages={37--55},
+  year={2016},
+  organization={Springer}
+}
+
+@article{pohl2016online,
+  title={Online indexing and clustering of social media data for emergency management},
+  author={Pohl, Daniela and Bouchachia, Abdelhamid and Hellwagner, Hermann},
+  journal={Neurocomputing},
+  volume={172},
+  pages={168--179},
+  year={2016},
+  publisher={Elsevier}
+}
+
+@inproceedings{rudra2016summarizing,
+  title={Summarizing situational tweets in crisis scenario},
+  author={Rudra, Koustav and Banerjee, Siddhartha and Ganguly, Niloy and Goyal, Pawan and Imran, Muhammad and Mitra, Prasenjit},
+  booktitle={Proceedings of the 27th ACM Conference on Hypertext and Social Media},
+  pages={137--147},
+  year={2016},
+  organization={ACM}
+}
+
+@article{imran2016twitter,
+  title={Twitter as a lifeline: Human-annotated twitter corpora for NLP of crisis-related messages},
+  author={Imran, Muhammad and Mitra, Prasenjit and Castillo, Carlos},
+  journal={arXiv preprint arXiv:1605.05894},
+  year={2016}
+}
+
+@article{blodgett2016demographic,
+  title={Demographic dialectal variation in social media: A case study of African-American English},
+  author={Blodgett, Su Lin and Green, Lisa and O'Connor, Brendan},
+  journal={arXiv preprint arXiv:1608.08868},
+  year={2016}
 }
 
 @article{mohammad2016translation,
@@ -326,6 +604,32 @@
   organization={ACM}
 }
 
+@article{gonccalves2017fall,
+  title={The fall of the empire: The americanization of English},
+  author={Gon{\c{c}}alves, Bruno and Loureiro-Porto, Luc{\'\i}a and Ramasco, Jos{\'e} J and S{\'a}nchez, David},
+  journal={arXiv preprint arXiv:1707.00781},
+  year={2017}
+}
+
+@article{nguyen2017kernel,
+  title={A kernel independence test for geographical language variation},
+  author={Nguyen, Dong and Eisenstein, Jacob},
+  journal={Computational Linguistics},
+  volume={43},
+  number={3},
+  pages={567--592},
+  year={2017},
+  publisher={MIT Press}
+}
+
+@article{tinoco2017variation,
+  title={Variation of the second person singular of the simple past tense in twitter: hiciste vs. hicistes" you did"},
+  author={Tinoco, Antonio Ruiz},
+  journal={Dialectologia: revista electr{\`o}nica},
+  pages={149--167},
+  year={2017}
+}
+
 @article{wu2017link,
     author={Yu, Wenchao and ... },
     title={Link Prediction with Spatial and Temporal Consistency in Dynamic Networks},
@@ -340,6 +644,13 @@
   pages={455--464},
   year={2017},
   organization={ACM}
+}
+
+@article{howard2018fine,
+  title={Fine-tuned Language Models for Text Classification},
+  author={Howard, Jeremy and Ruder, Sebastian},
+  journal={arXiv preprint arXiv:1801.06146},
+  year={2018}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -402,15 +713,6 @@
   year={2015}
 }
 
-@inproceedings{weyand2016planet,
-  title={Planet-photo geolocation with convolutional neural networks},
-  author={Weyand, Tobias and Kostrikov, Ilya and Philbin, James},
-  booktitle={European Conference on Computer Vision},
-  pages={37--55},
-  year={2016},
-  organization={Springer}
-}
-
 @article{jozefowicz2016exploring,
   title={Exploring the limits of language modeling},
   author={Jozefowicz, Rafal and Vinyals, Oriol and Schuster, Mike and Shazeer, Noam and Wu, Yonghui},
@@ -452,24 +754,146 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{Geolocating Tweets in any Language at any Location}
-\author{\fixme{authors}}
+%\titlenote{Produces the permission block, and copyright information}
+%\subtitle{}
+%\subtitlenote{The full version of the author's guide is available as \texttt{acmart.pdf} document}
+
+\author{Anonymous Authors}
+\affiliation{}
+\email{}
+
+% The default list of authors is too long for headers.
+\renewcommand{\shortauthors}{shortauthors}
+
 \begin{document}
+
+\begin{abstract}
+    We consider the problem of determining the GPS coordinates that a tweet was sent from based only on its message contents.
+    Our method works on tweets sent in any language,
+    and our evaluation dataset contains \fixme{} tweets in more than \fixme{} languages from around the world.
+    This dataset contains the largest number of languages used for any currently published natural language processing task.
+    We achieve high accuracy across many languages through a novel character embedding that lets us develop a convolutional neural network that shares information between the languages.
+    The output layer of our network exploits the non-Euclidean properties of the Earth's surface to accurately predict GPS locations.
+\end{abstract}
+
+%
+% The code below should be generated by the tool at
+% http://dl.acm.org/ccs.cfm
+% Please copy and paste the code instead of the example below.
+%
+\begin{CCSXML}
+    \fixme{}
+\end{CCSXML}
+
+%\ccsdesc[500]{Computer systems organization~Embedded systems}
+%\ccsdesc[300]{Computer systems organization~Redundancy}
+%\ccsdesc{Computer systems organization~Robotics}
+%\ccsdesc[100]{Networks~Network reliability}
+
+
+\keywords{\fixme{}}
 
 \maketitle
 
-\begin{abstract}
-    We consider the problem of geolocating tweets based on their message contents.
-\end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
+Twitter is one of the Internet's largest social networks,
+with approximately 500 million tweets sent everyday from all over the world \citep{}.
+In this paper, our goal is to use linguistic clues present in the tweet's text to determine where in the world the tweet was sent from.
+For example, consider the following Spanish tweet:
+
+\noindent
+\resizebox{0.485\textwidth}{!}{\includegraphics{img/infer/2-country_xentropy}}%
+\footnote{Translation: ``What a great morning... exciting.  You can see the video below the post.''}
+
+\noindent
+A linguist could easily determine that this tweet was sent from Spain.
+The fact that the tweet is in Spanish narrows the likely sources to 
+Spanish speaking countries (e.g. Spain, Mexico, Argentina) 
+or countries with a large Spanish minority (e.g. USA, Philippines).
+The clue that this tweet was sent from Spain, however, is the word \str{pod\'eis}.
+This word is a conjugation of the verb \str{poder} in the so-called \defn{vosotros} form.
+The vosotros verb conjugations are only used in the Castilian Spanish dialect used in Spain;
+all other dialects use the so-called \defn{ustedes} form (which would conjugate as \str{pueden}).
+Our system \uniloc~ correctly predicts that this tweet comes from Spain,
+and creates a detailed probability distribution over the GPS coordinates in Spain the tweet is likely to have been sent from (see Figure \ref{fig:poder}).
+\uniloc was given no prior knowledge of these verb conjugations or geographic patterns,
+and learned this relationship completely from scratch.
+
+\begin{figure}
+    \resizebox{0.485\textwidth}{!}{\includegraphics{img/infer/2}}
+    \caption{}
+    \label{fig:poder}
+\end{figure}
+
+%Our system UniLoc was able to correctly determine that this tweet was sent from Spain by taking advantage of dialectical differences between Spanish as spoken in Spain and Latin
+%This tweet was sent from Madrid, Spain, and our system UniLoc was able to correctly determine this.
+
+\noindent
+\textbf{Why care about geolocation?}
+Many important applications rely on geotagged tweets.
+For example, geotagged tweets have been used to map the spread of influenza \citep{paul2014twitter,santillana2015combining},
+for measuring the impact of earthquakes \citep{sakaki2010earthquake},
+for coordinating emergency services \citep{klein2012detection,imran2016twitter,rudra2016summarizing,pohl2016online},
+for measuring the spread of political opinions \citep{conover2011political,barbera2014birds},
+for comparing dietary habits in different locations \citep{widener2014using},
+for measuring neighborhood happiness levels \citep{nguyen2016leveraging}, 
+and for measuring unemployment rates \citep{antenucci2014using,llorente2015social}.
+Unfortunately for these applications, only about 1\% of tweets are geotagged by their users.
+A system that could predict the location of the other 99\% of tweets could be used to improve the accuracy of all these tasks in a semisupervised manner.
+
+Developing a good geotagging language model, in particular, has important applications.
+Previous work has used geotagged language models to map the dialects of American English \citep{huang2016understanding,gonccalves2017fall} and Spanish \citep{gonccalves2014crowdsourcing}.
+Furthermore, because our language model combines so many different languages,
+and can form the basis for multilingual classification tasks using transfer learning \citep{wang2015transfer,howard2018fine}.
+
+\noindent
+\textbf{Prior work on geolocation}.
+A large body of work has formed around the problem of geolocating tweets.
+
+\citet{hays2008im2gps} performs image geolocation down to the gps coordinate level using $k$-nearest neighbor queries and then builds a kernel density estimate of the distribution.
+\citet{crandall2009mapping} uses a classification strategy.
+\citet{weyand2016planet} discretizes the world in a semantically meaningful method.
+
+\citet{nguyen2017kernel} use a RKHS method for geolocation.
+
+Most solutions for geolocating tweets work only on a small subset of tweets that are particularly easy to geolocate.
+The earliest methods work for English language tweets in the United States \citep{},
+and state-of-the-art methods generalize to English tweets from major cities \citep{}.
+These methods all take advantage of the fact that certain English words are highly correlated with certain regions.
+\fixme{For example, the word \str{Chargers} is highly correlated with tweets from San Diego, CA,
+because the Chargers football team is located there.}
+These existing methods do not work for most tweets, however,
+because most tweets are neither located in the United States nor in English (see Figure \ref{fig:country/lang}).
+
+\begin{figure}
+    \resizebox{0.225\textwidth}{!}{\input{img/country}}
+    \resizebox{0.225\textwidth}{!}{\input{img/lang}}
+    \caption{Most tweets are neither located in the United States nor in English,
+    but prior work focuses on these two special cases.}
+    \label{fig:country/lang}
+\end{figure}
+
+\noindent
+\textbf{Prior work on multilanguage models.}
+
+\noindent
+\textbf{Our contributions.}
 Our contributions include:
 \begin{enumerate}
     \item
-        Our method works with all tweets, in all languages
+        Our method works with all tweets, in all languages.
+        Twitter has official support for XXX languages,
+        but many other languages are represented as well.
+        For example, nearly-dead languages like Latin.
+        The pope has an official latin-only twitter account \str{@Pontifex\_ln}.
+        The esperanto language is not officially supported, but has an active twitter community.
+        And web aps will automatically translate a text into Klingon\footnote{The ap appears to have been taken offline, but a news article is available at https://www.tomsguide.com/us/Star-Trek-Online-Klingon-Translator,news-5294.html} and tweet it.
     \item
-        Our method requires no preprocessing.
+        Our method requires no ad-hoc preprocessing of the data,
+        and in particular can achieve good results with only a single pass over the dataset.
     \item
         A new method for generating features at the character level.
     \item
@@ -483,49 +907,134 @@ Our contributions include:
         A method for visualizing the important features that causes a tweet to be located in a particular location.
 \end{enumerate}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Identifying tweet location vs user location}
+Predicting the location of a tweet has many uses.
+\citet{blodgett2016demographic} use tweet geolocation data to study African-American English dialects.
+By predicting the location of tweets, potentially many more tweets could be used in their datasets.
 
-\begin{figure}
-    \input{img/country}
-    \input{img/lang}
-    \caption{Most tweets are neither located in the United States nor in English,
-    but prior work focuses on these two special cases.}
-\end{figure}
+The \str{lang} field of a tweet is determined automatically by the twitter software using a combination of unpublished tweet and user level features.
+\citet{blodgett2016demographic} show that existing language prediction tools such as \str{lang.py} \citep{lui2012langid} perform poorly relative to the \str{lang} field of the json object.
+This effect is exacerbated when the tweets exhibit dialectical differences from the formal version of their language.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Problems with using word features}
+%\subsection{Identifying tweet location vs user location}
+%
+%In this paper, we focus on the task of identifying tweet location, rather than user location.
+%Identifying the location of a tweet is the harder problem because there is less information available.
 
-\begin{description}
-    \item[English]. 
-        Example of \str{York} vs \str{New York}.  
-        Spelling patterns like \str{color} vs \str{colour} and \str{theater} vs \str{theatre}.
-    \item[German]. Lots of compound words.
-    \item[Spanish]. Verb conjugations for informal 2nd person are different in different countries.
-    \item[Arabic]. Conjugations differ.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Problems with word-level features}
+
+%\begin{description}
+    %\item[English]. 
+        %Example of \str{York} vs \str{New York}.  
+        %Spelling patterns like \str{color} vs \str{colour} and \str{theater} vs \str{theatre}.
+    %\item[German]. Lots of compound words.
+    %\item[Japanese]. Does not use spaces to differentiate between words.  Uses three different alphabets.
+    %\item[Spanish]. Verb conjugations for informal 2nd person are different in different countries.
+    %\item[Arabic]. Conjugations differ.
+%
+%\end{description}
+
+Traditional text mining generates word level features in a three step process:
+First, the input text is tokenized.
+Second, stemming and lemmatization tools are used to standardize the tokens in the corups.
+Finally, a feature vector is created using simple summary statistics such as $n$-grams or TF-IDF \citep{}.
+This process works well for English-only text corpora,
+but is essentially impossible in the highly multi-lingual corpus we consider.
+In this section, we highlight four problems with these word-level features.
+
+\begin{description}[style=unboxed,leftmargin=0cm]
+    \item[Tokenization in multilingual corpora is difficult.]
+        Tokenization of English text is easy because spaces are used to separate words.
+        Other languages, however, do not have similar cues to separate words.
+        For example, Chinese and Japanese do not use spaces at all,
+        and Vietnamese traditionally uses spaces between syllables even within words.
+        Good tokenizers for these languages have existed for decades \citep[e.g.][]{fung1998extracting,huyen2008hybrid},
+        however these tokenizers have four limitations that make them unsuitable for our task:
+        First, they require that the text's language be known a priori so that an appropriate tokenization routine can be called.
+        The Twitter API has a \str{lang} field associated with each tweet,
+        however the identified language is often wrong.
+        Second, they cannot be used simultaneously on the same text.
+        Many tweets are written in multiple languages simultaneously,
+        and no existing tokenizers offer this support.
+        Third, existing tokenizers do not consider dialectical differences in their target language which may be of importance in geolocating.
+        Finally, they require clean input that has both proper spelling and grammar,
+        but social data is notoriously unclean.
+
+    \item[Verb conjugations].
+        English verbs are relatively simple.
+        For example, the verb \str{talk} has only three forms:
+        \str{talk},\str{talks},and \str{talking}.
+        Verbs in other languages, however, 
+        are much more complicated and exhibit regional variation.
+        Consider the following example from Spanish.
+        The verb \text{poder} (which means ``to be able to'') is written
+
+        \citet{tinoco2017variation} use twitter to study the geographic differences of \str{iste} vs \str{istes}.
+
+    \item[Languages with multiple writing systems.]
+        The Malay language was traditionally written using the Arabic alphabet.
+        Recently, however, the Latin alphabet has become more common.
+        On twitter, approximately \fixme{} tweets in Malay use the Arabic alphabet.
+
+    \item[Spelling errors.]
+    %\item[Phonology influences spelling errors].
+        \citep{treiman2000dialect} studies the differences in spelling mistakes between American and British English.
+        \citet{ahmed2015lexical} proposes a method for automatically fixing the spelling mistakes inherrent in twitter data,
+        but the method is limitted only to English and does not account for dialectical variations.
+%
+    %\item[Consonant cluster reduction].
+For example, the word \str{left} is likely to get simplified to \str{lef} when the subsequent word is a vowel.
+\citet{guy1991contextual,tagliamonte2005new} study this phenomenon in standard english,
+and \citet{eisenstein2013phonological} shows that this phenomenon carries over into the context of tweets.
+
+    \item[Relationships between words.]
+        In standard German the word \str{radio} is neuter and so is written \str{das radio}.
+        In Swiss German, however, the word \str{radio} is masculine and so is written \str{der radio}. \citep{hollenstein2014compilation}
+
+        Compounding.
+
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The prediction models}
-In this section we present a general model framework for twitter geolocation.
-This general model has as special cases all previous work on twitter geolocation,
-and lets us easily mix-and-match contributions from previous authors.
-This will let us highlight exactly what out contributions are.
+
+\begin{figure*}
+    \centering
+    \input{fig/model}
+    \caption{The general model framework. \fixme{}}
+    \label{fig:model}
+\end{figure*}
+
+\begin{table}
+    \centering
+    \input{fig/hyperparam}
+    \caption{The model's hyperparameters.}
+    \label{tab:hyperparam}
+\end{table}
+
+The structure of our model is shown in Figure \ref{fig:model},
+and Table \ref{tab:hyperparam} shows the model's hyperparameters. 
+We use the tweet content (ignoring metadata) as input into the model.
+Then we divide the model itself into three stages:
+feature generation, feature mixing, and output.
+The model's output is then compared against the location data in the tweet to measure its efficacy.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Twitter data}
+
+The Twitter API associates a JSON object with each tweet,
+and this JSON object contains many details about the tweet.
 
 %%%%%%%%%%%%%%%%%%%%
 \subsubsection{Metadata}
 
 We do not consider the metadata associated with a tweet. 
+Because this metadata is easy to collect,
+it is easy to add to other models \citep{han2014text}.
 
 \begin{description}
     \item[user generated metadata] 
-        The Twitter API associates a JSON object with each tweet,
-        and this JSON object contains many details of
-        Because this metadata is easy to collect,
-        it is easy to add to other models \citep{han2014text}.
         There are too many types of user generated metadata to discuss them all in detail,
         so we focus our discussion on the user's location and timezone fields.
 
@@ -556,30 +1065,31 @@ Studies the privacy implications of geolocation.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Feature generation}
 
-\begin{description}
-    \item[hand-crafted, word-level features]
-    \item[automatically generarated, character-level features]
-    \item[topological time features]
-\end{description}
-Previous methods for feature generation generate \emph{hand-crafted} \emph{word-level} features from the text.
-We propose 
-%\citet{dhingra2016tweet2vec} creates a vector space model of tweets using a character level recurrent GRU network.
-%\citet{severyn2015unitn} use a word level CNN for sentiment classification on tweets.
-
 Our feature generation procedure is inspired by recent trends in deep learning and natural language processing.
 A key idea of recent deep learning methods is that automatically learned features can perform much better than hand-crafted features.
 
-All previous work on twitter geolocation has essentially relied on hand-crafted features.
-For example, \citet{} use a bag-of-words style model.
+\begin{description}
+    \item[hand-crafted, word-level features]
+        All previous work on twitter geolocation has essentially relied on hand-crafted features.
 
-The character level feature generator is inspired by previous character-level feature generators used in the machine learning community \citep{}.
-\citet{zhang2015character} use a smaller depth character CNN, which is what I've implemented so far.
+        \citet{han2012geolocation} study a method of determining location indicative words using an information gain strategy.
 
-Other alternatives use deeper CNNs with resnet connections \citep{conneau2017very}, recurrent neural networks \citep{chung2016character}, or complex combinations of CNNs and RNNs \citep{kim2016character,jozefowicz2016exploring}.
-Each of these techniques requires considerable processing resources, however, 
-so we did not have the resources to exhaustively compare these techniques to each other on this task.
 
-\citet{han2012geolocation} study a method of determining location indicative words using an information gain strategy.
+    \item[automatically generarated, character-level features]
+        We use a \defn{convolutional neural network (CNN)} to generate character-level features.
+        Character-level models have previously been applied to twitter NLP tasks \citep[e.g.][]{dhingra2016tweet2vec,severyn2015unitn},
+        but never to the geolocation problem.
+        %\citet{dhingra2016tweet2vec} creates a vector space model of tweets using a character level recurrent GRU network.
+        %\citet{severyn2015unitn} use a word level CNN for sentiment classification on tweets.
+
+        Specifically, our model is a variant of the CLCNN \citep{zhang2015character} which we've modified to work in the multi-language setting.
+        Alternative character-level models use deeper CNNs with resnet connections \citep{conneau2017very}, recurrent neural networks \citep{chung2016character}, or complex combinations of CNNs and RNNs \citep{kim2016character,jozefowicz2016exploring}.
+        Each of these techniques requires considerable processing resources, however, 
+        so we did not have the resources to exhaustively compare these techniques to each other on this task.
+        We chose to base our model off of the CLCNN model because it has the best performance on a small held-out subset of tweets.
+
+    \item[topological time features]
+\end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Feature mixing}
@@ -667,129 +1177,13 @@ It is defined as
 
 \citet{fisher1992regression} was the first to propose a method for regression onto the surface of a sphere.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Experiments}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{figure}
-    \centering
-    \begin{tikzpicture}
-        [ node distance=5mm
-        , li/.style={anchor=west}
-        , l1/.style={ text width=4cm}
-        , tc/.style={anchor=north, text width=4cm}
-        , tc2/.style={li, minimum height=5mm}
-        , box/.style={draw=border, inner sep=2mm, rounded corners=1mm}
-        , us/.style  ={->,line width=2pt,draw=green}
-        , them/.style={->,line width=1pt,draw=red,dotted}
-        ]
-        \pgfdeclarelayer{background}
-        \pgfsetlayers{background,main}
-        \definecolor{lightblue}{rgb}{0.9,0.9,1.0}
-        \definecolor{border}{rgb}{0.2,0.2,0.5}
-        \newcommand{\headerA}[1]{\textbf{#1}}
-        \newcommand{\headerB}[1]{\textsc{#1}}
-
-        \node (t) [l1]  at (0,0) {\headerA{Tweet Data}};
-            \node (tc) [tc] at (0,-0.5) {\headerB{Content}};
-                \node (tc0) [right=2mm of tc.west] {};
-                \node (tc1) [below=of tc0.west, tc2] {text};
-                \node (tc2) [below=of tc1.west, tc2] {language};
-                \node (tc3) [below=of tc2.west, tc2] {date/time};
-                \node (tc4) [below=of tc3.west, tc2] {};
-                \node (tc5) [below=of tc4.west, tc2] {};
-            \node (tcB) [box, fit={(tc)(tc5)}] {};
-            \node (tm) [tc] at (5,-0.5) {\headerB{Metadata}};
-                \node (tm1) [below=of tm.west , tc2] {~~previous tweets};
-                \node (tm2) [below=of tm1.west, tc2] {~~social graph};
-                \node (tm3) [below=of tm2.west, tc2] {~~timezone};
-                \node (tm4) [below=of tm3.west, tc2] {~~user specified location};
-                \node (tm5) [below=of tm4.west, tc2] {~~etc.};
-            \node (tmB) [box, fit={(tm)(tm5)}] {};
-            \node (tp) [tc] at (10,-0.5) {\headerB{Location}};
-                \node (tp1) [below=of tp.west , tc2] {~~place};
-                \node (tp2) [below=of tp1.west, tc2] {~~pseudo-place};
-                \node (tp3) [below=of tp2.west, tc2] {~~country};
-                \node (tp4) [below=of tp3.west, tc2] {~~gps};
-                \node (tp5) [below=of tp4.west, tc2] {~~};
-            \node (tpB) [box, fit={(tp)(tp5)}] {};
-        \begin{pgfonlayer}{background}
-            \node [box, fill=lightblue, fit={(t) (tcB) (tmB)(tpB)}] {};
-        \end{pgfonlayer}
-
-        \node (m) [l1] at (0,4.5) {\headerA{Model}};
-            \node (mf) [tc] at (0,4.0) {\headerB{Feature generation}};
-                \node (mf0) [right=2mm of mf.west] {};
-                \node (mf1) [below=of mf0.west, tc2] {top.\ time transform};
-                \node (mf2) [below=of mf1.west, tc2] {language 1-hot encoded};
-                \node (mf3) [below=of mf2.west, tc2] {auto.\ character features};
-                \node (mf4) [below=of mf3.west, tc2] {manual word features};
-            \node (mfB) [box, fit={(mf)(mf4)}] {};
-            \node (mm) [tc] at (5,4.0) {\headerB{Feature mixing}};
-                \node (mm1) [below=of mm.west , tc2] {~~fully conn.\ relu layers};
-                \node (mm2) [below=of mm1.west, tc2] {~~};
-                %\node (mm3) [below=of mm2.west, tc2] {~~};
-                %\node (mm4) [below=of mm3.west, tc2] {~~};
-            \node (mmB) [box, fit={(mm)(mm2)}] {};
-            \node (mp) [tc] at (10,4.0) {\headerB{Prediction loss}};
-                \node (mp0) [right=2mm of mp.west] {};
-                \node (mp1) [below=of mp0.west, tc2] {angular regression};
-                \node (mp2) [below=of mp1.west, tc2] {mixture of von mises};
-                \node (mp3) [below=of mp2.west, tc2] {least squares};
-                \node (mp4) [below=of mp3.west, tc2] {cross entropy};
-            \node (mpB) [box, fit={(mp)(mp4)}] {};
-        \begin{pgfonlayer}{background}
-            \node [box, fill=lightblue, fit={(m)(mfB)(mpB)}] {};
-        \end{pgfonlayer}
-
-        \node (tc1a) [coordinate, left=10mm of tc1.west] {};
-        \draw[us] (tc1.west) -- (tc1a) |- (mf3.west);
-
-        \node (tc2a) [coordinate, left=12mm of tc2.west] {};
-        \draw[us] (tc2.west) -- (tc2a) |- (mf2.west);
-
-        \node (tc3a) [coordinate, left=14mm of tc3.west] {};
-        \draw[us] (tc3.west) -- (tc3a) |- (mf1.west);
-
-        \node (mf2a) [coordinate, right=2mm of mf2.east] {};
-        \node (mm1a) [coordinate, left=10mm of mm1.south] {};
-        \node (mm1a2) [coordinate, below=2.2mm of mm1a] {};
-        \draw[us] (mf1.east) -| (mf2a) -- (mm1a2) -- (mm1a);
-        \draw[us] (mf2.east) -| (mf2a) -- (mm1a2) -- (mm1a);
-        \draw[us] (mf3.east) -| (mf2a) -- (mm1a2) -- (mm1a);
-
-        \node (mp2c) [coordinate, left=4mm of mp2.west] {};
-        \node (mm1b) [coordinate, right=10mm of mm1.south] {};
-        \node (mm1b2) [coordinate, below=2.2mm of mm1b] {};
-        \draw[us] (mm1b) -- (mm1b2) -- (mp2c) |- (mp1);
-        \draw[us] (mm1b) -- (mm1b2) -- (mp2c) |- (mp2);
-        \draw[us] (mm1b) -- (mm1b2) -- (mp2c) |- (mp4);
-
-        \node (mp4a) [coordinate, right=24mm of mp4.east] {};
-        \node (tp1a) [coordinate, right=8mm of tp1.east] {};
-        %\draw[->] (mp4) -- (mp4a) |- (tp1a) |- (tp1);
-        %\draw[->] (mp4) -- (mp4a) |- (tp1a) |- (tp2);
-
-        \node (mp2a) [coordinate, right=8mm of mp2.east] {};
-        \node (mp2b) [coordinate, right=12mm of mp2a.east] {};
-        \draw[us] (mp1.east) -| (mp2a) -- (mp2b) |- (tp3);
-        \draw[us] (mp2.east) -| (mp2a) -- (mp2b) |- (tp3);
-
-        \node (tc1a2) [coordinate, left=8mm of tc1.west] {};
-        \draw[them] (tc1.west) -- (tc1a2) |- (mf4.west);
-
-        \node (mp4a) [coordinate, left=2mm of mp4] {};
-        \draw[them] (mf4.east) -- (mp4a) |- (mp4.west);
-        \draw[them] (mf4.east) -- (mp4a) |- (mp3.west);
-
-        \node (mp3b) [coordinate, right=27mm of mp3.east] {};
-        \draw[them] (mp3.east) -- (mp3b) |- (tp3.east);
-        
-        \node (mp4b) [coordinate, right=25mm of mp4.east] {};
-        \draw[them] (mp4.east) -- (mp4b) |- (tp1.east);
-
-    \end{tikzpicture}
-    \caption{The general model framework. \fixme{}}
-\end{figure}
+\begin{figure*}
+\noindent\input{img/hr-es}
+\caption{}
+\end{figure*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
@@ -845,6 +1239,7 @@ It is defined as
 \noindent\input{img/day-th}
 }
 
+\onecolumn
 \section{Languages and Time of Day}
 \noindent\input{img/hr-ar}
 
@@ -1433,6 +1828,7 @@ Finally, we can incorporate a dependence on the textual features simply by updat
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \clearpage
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{main}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
