@@ -145,6 +145,15 @@
   year={1998}
 }
 
+@article{pullum1999african,
+  title={African American Vernacular English is not standard English with mistakes},
+  author={Pullum, Geoffrey K},
+  journal={The workings of language: From prescriptions to perspectives},
+  pages={59--66},
+  year={1999},
+  publisher={Praeger Westport, CT}
+}
+
 @article{treiman2000dialect,
   title={Dialect and authography: Some differences between American and British spellers.},
   author={Treiman, Rebecca and Barry, Christopher},
@@ -194,6 +203,14 @@
   organization={ACM}
 }
 
+@inproceedings{o2010tweetmotif,
+  title={TweetMotif: Exploratory Search and Topic Summarization for Twitter.},
+  author={O'Connor, Brendan and Krieger, Michel and Ahn, David},
+  booktitle={ICWSM},
+  pages={384--385},
+  year={2010}
+}
+
 @inproceedings{sakaki2010earthquake,
   title={Earthquake shakes Twitter users: real-time event detection by social sensors},
   author={Sakaki, Takeshi and Okazaki, Makoto and Matsuo, Yutaka},
@@ -224,6 +241,15 @@
   booktitle={Proceedings of the 2010 Conference on Empirical Methods in Natural Language Processing},
   pages={1277--1287},
   year={2010},
+  organization={Association for Computational Linguistics}
+}
+
+@inproceedings{gimpel2011part,
+  title={Part-of-speech tagging for twitter: Annotation, features, and experiments},
+  author={Gimpel, Kevin and Schneider, Nathan and O'Connor, Brendan and Das, Dipanjan and Mills, Daniel and Eisenstein, Jacob and Heilman, Michael and Yogatama, Dani and Flanigan, Jeffrey and Smith, Noah A},
+  booktitle={Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies: short papers-Volume 2},
+  pages={42--47},
+  year={2011},
   organization={Association for Computational Linguistics}
 }
 
@@ -306,6 +332,13 @@
   organization={ACM}
 }
 
+@inproceedings{owoputi2013improved,
+  title={Improved part-of-speech tagging for online conversational text with word clusters},
+  author={Owoputi, Olutobi and O'Connor, Brendan and Dyer, Chris and Gimpel, Kevin and Schneider, Nathan and Smith, Noah A},
+  year={2013},
+  organization={Association for Computational Linguistics}
+}
+
 @inproceedings{eisenstein2013phonological,
   title={Phonological factors in social media writing},
   author={Eisenstein, Jacob},
@@ -330,6 +363,14 @@
   title={A Stacking-based Approach to Twitter User Geolocation Prediction.},
   author={Han, Bo and Cook, Paul and Baldwin, Timothy},
   year={2013}
+}
+
+@inproceedings{bies2014transliteration,
+  title={Transliteration of arabizi into arabic orthography: Developing a parallel annotated arabizi-arabic script sms/chat corpus},
+  author={Bies, Ann and Song, Zhiyi and Maamouri, Mohamed and Grimes, Stephen and Lee, Haejoong and Wright, Jonathan and Strassel, Stephanie and Habash, Nizar and Eskander, Ramy and Rambow, Owen},
+  booktitle={Proceedings of the EMNLP 2014 Workshop on Arabic Natural Language Processing (ANLP)},
+  pages={93--103},
+  year={2014}
 }
 
 @article{gonccalves2014crowdsourcing,
@@ -513,6 +554,22 @@
   title={Geolocation Prediction in Twitter Using Social Networks: A Critical Analysis and Review of Current Practice.},
   author={Jurgens, David and Finethy, Tyler and McCorriston, James and Xu, Yi Tian and Ruths, Derek},
   year={2015}
+}
+
+@inproceedings{van2016simple,
+  title={A simple but effective approach to improve arabizi-to-english statistical machine translation},
+  author={van der Wees, Marlies and Bisazza, Arianna and Monz, Christof},
+  booktitle={Proceedings of the 2nd Workshop on Noisy User-generated Text (WNUT)},
+  pages={43--50},
+  year={2016}
+}
+
+@inproceedings{tobaili2016arabizi,
+  title={Arabizi Identification in Twitter Data},
+  author={Tobaili, Taha},
+  booktitle={Proceedings of the ACL 2016 Student Research Workshop},
+  pages={51--57},
+  year={2016}
 }
 
 @article{huang2016understanding,
@@ -795,13 +852,15 @@
 
 \maketitle
 
-
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-Twitter is one of the Internet's largest social networks,
-with approximately 500 million tweets sent everyday from all over the world \citep{}.
+Twitter is one of the Internet's largest social networks.
+Users from all over the world sending 500 million tweets everyday.
 In this paper, our goal is to use linguistic clues present in the tweet's text to determine where in the world the tweet was sent from.
+This process is called \defn{geotagging}.
+
 For example, consider the following Spanish tweet:
 
 \noindent
@@ -815,12 +874,16 @@ Spanish speaking countries (e.g. Spain, Mexico, Argentina)
 or countries with a large Spanish minority (e.g. USA, Philippines).
 The clue that this tweet was sent from Spain, however, is the word \str{pod\'eis}.
 This word is a conjugation of the verb \str{poder} in the so-called \defn{vosotros} form.
-The vosotros verb conjugations are only used in the Castilian Spanish dialect used in Spain;
-all other dialects use the so-called \defn{ustedes} form (which would conjugate as \str{pueden}).
-Our system \uniloc~ correctly predicts that this tweet comes from Spain,
-and creates a detailed probability distribution over the GPS coordinates in Spain the tweet is likely to have been sent from (see Figure \ref{fig:poder}).
+The vosotros verb conjugations are only found in the Castilian Spanish dialect used in Spain.
+All other dialects use the so-called \defn{ustedes} form, which would conjugate the verb as \str{pueden}.
+
+Our system \uniloc~ uses the above reasoning to identify that this tweet comes from Spain.
+\uniloc further creates a detailed probability distribution over the GPS coordinates that the tweet is likely to have been sent from,
+and identifies key letters in the tweet that are highly important in determining its location 
+(see Figure \ref{fig:poder}).
 \uniloc was given no prior knowledge of these verb conjugations or geographic patterns,
 and learned this relationship completely from scratch.
+
 
 \begin{figure}
     \resizebox{0.485\textwidth}{!}{\includegraphics{img/infer/2}}
@@ -936,8 +999,8 @@ This effect is exacerbated when the tweets exhibit dialectical differences from 
 %\end{description}
 
 Traditional text mining generates word level features in a three step process:
-First, the input text is tokenized.
-Second, stemming and lemmatization tools are used to standardize the tokens in the corups.
+First, the input text is tokenized to extract words from the text.
+Second, these 
 Finally, a feature vector is created using simple summary statistics such as $n$-grams or TF-IDF \citep{}.
 This process works well for English-only text corpora,
 but is essentially impossible in the highly multi-lingual corpus we consider.
@@ -958,10 +1021,29 @@ In this section, we highlight four problems with these word-level features.
         Many tweets are written in multiple languages simultaneously,
         and no existing tokenizers offer this support.
         Third, existing tokenizers do not consider dialectical differences in their target language which may be of importance in geolocating.
+        For example \citet{blodgett2016demographic} show that standard tools for parsing tweets do not work well for the African American English dialect.
         Finally, they require clean input that has both proper spelling and grammar,
         but social data is notoriously unclean.
+        Fifth, tweets use nonstandard grammar to create emoticons \citep{}.
 
-    \item[Verb conjugations].
+        Twitter specific tokenizers/part of speech taggers,etc\citep{o2010tweetmotif,gimpel2011part,owoputi2013improved}
+
+    \item[Many languages use multiple writing systems.]
+        The Indonesian family of languages was traditionally written using the \defn{Jawi} alphabet,
+        which is a variant of the Arabic alphabet.
+
+        The choice of alphabet to use can be highly location-indicative.
+        Recently, the countries of Indonesia, Malaysia, and Singapore stopped officially using the Jawi alphabet in favor of the latin-based \defn{Rumi} alphabet.
+        Brunei, in contrast, continues to officially use both the Jawi and Rumi alphabets.
+        On twitter, approximately \fixme{} tweets in these languages use the Jawi alphabet.
+
+        \defn{Transliteration} is the process of converting a text written in one writing system to another.
+        There is an official transliteration system between the Jawi and Rumi systems,
+        but official transliterations are not always available or followed.
+        For example, the \defn{Arabizi} writing system has developed in Arabic speaking countries as a way to write arabic on social media platforms like Twitter in Latin script.
+        Many users mix Arabizi with standard arabic characters,\citep{bies2014transliteration,tobaili2016arabizi,van2016simple}
+
+    \item[Verb conjugations.]
         English verbs are relatively simple.
         For example, the verb \str{talk} has only three forms:
         \str{talk},\str{talks},and \str{talking}.
@@ -970,12 +1052,11 @@ In this section, we highlight four problems with these word-level features.
         Consider the following example from Spanish.
         The verb \text{poder} (which means ``to be able to'') is written
 
-        \citet{tinoco2017variation} use twitter to study the geographic differences of \str{iste} vs \str{istes}.
+        Even English has the \str{Imma} conjugation.
 
-    \item[Languages with multiple writing systems.]
-        The Malay language was traditionally written using the Arabic alphabet.
-        Recently, however, the Latin alphabet has become more common.
-        On twitter, approximately \fixme{} tweets in Malay use the Arabic alphabet.
+        AAE frequently omits the copula (i.e.\ \str{to be}) \citep{pullum1999african} 
+
+        \citet{tinoco2017variation} use twitter to study the geographic differences of \str{iste} vs \str{istes}.
 
     \item[Spelling errors.]
     %\item[Phonology influences spelling errors].
@@ -983,9 +1064,10 @@ In this section, we highlight four problems with these word-level features.
         \citet{ahmed2015lexical} proposes a method for automatically fixing the spelling mistakes inherrent in twitter data,
         but the method is limitted only to English and does not account for dialectical variations.
 %
-    %\item[Consonant cluster reduction].
+    \item[Consonant cluster reduction].
 For example, the word \str{left} is likely to get simplified to \str{lef} when the subsequent word is a vowel.
-\citet{guy1991contextual,tagliamonte2005new} study this phenomenon in standard english,
+\citet{guy1991contextual,tagliamonte2005new} study this phenomenon in standard English,
+\citet{pullum1999african} argues that this is a particular feature of the African American English dialect,
 and \citet{eisenstein2013phonological} shows that this phenomenon carries over into the context of tweets.
 
     \item[Relationships between words.]
