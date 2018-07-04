@@ -20,7 +20,9 @@
 \usepackage{graphicx}
 \usepackage{rotating}
 \usepackage{xcolor}
+
 \usepackage[inline]{enumitem}
+\setlist[description]{topsep=0.1cm,itemsep=0.1cm,style=unboxed,leftmargin=0cm,listparindent=\parindent}
 
 %\usepackage{algorithm}
 %\usepackage[noend]{algpseudocode}
@@ -363,6 +365,14 @@
   title={A Stacking-based Approach to Twitter User Geolocation Prediction.},
   author={Han, Bo and Cook, Paul and Baldwin, Timothy},
   year={2013}
+}
+
+@inproceedings{maier2014language,
+  title={Language variety identification in Spanish tweets},
+  author={Maier, Wolfgang and G{\'o}mez-Rodr{\'\i}guez, Carlos},
+  booktitle={Proceedings of the EMNLP'2014 Workshop on Language Technology for Closely Related Languages and Language Variants},
+  pages={25--35},
+  year={2014}
 }
 
 @inproceedings{bies2014transliteration,
@@ -856,34 +866,56 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-Twitter is one of the Internet's largest social networks.
-Users from all over the world sending 500 million tweets everyday.
-In this paper, our goal is to use linguistic clues present in the tweet's text to determine where in the world the tweet was sent from.
-This process is called \defn{geotagging}.
+Twitter is one of the Internet's largest social networks,
+with users from all over the world sending 500 million tweets everyday.
+This paper introduces \uniloc, 
+a system that uses linguistic clues present in the tweet's text to determine where in the world the tweet was sent from.
 
-For example, consider the following Spanish tweet:
-
-\noindent
-\resizebox{0.485\textwidth}{!}{\includegraphics{img/infer/2-country_xentropy}}%
+%\item[Example.]
+%For example, consider the following Spanish tweet:%
+%For example, 
+We begin with a motivating example.
+Let's try to guess where the following tweet was sent from:
+\begin{quote}
+    \str{Qu\'e gran ma\~nana... emocionante.  Pod\'eis ver el v\'ideo abajo en el enlace.}%
 \footnote{Translation: ``What a great morning... exciting.  You can see the video below the post.''}
+\end{quote}
+%
+%\noindent
+%\resizebox{0.485\textwidth}{!}{\includegraphics{img/infer/2-country_xentropy}}%
+%
+%\noindent
+%A linguist could easily determine that this tweet was written in Spain.
+The first clue we consider is the tweet's language.
+Because this tweet was written in Spanish,
+it was likely sent from a Spanish speaking country (e.g. Spain, Mexico, Argentina) 
+or a country with a large Spanish minority (e.g. USA, Philippines).
+%Subtle differences in dialect between these countries can be used to further reduce the possibilities.
+%The clue that this tweet was sent from Spain, however, is the word \str{pod\'eis}.
+%This word is a conjugation of the verb \str{poder} in the \defn{vosotros} form.
+%We can narrow down the tweet's location further using d
+We can further refine our guess by using differences in the Spanish dialects spoken in these countries.
+In this tweet, the word \str{pod\'eis} is the most important clue.
+\str{pod\'eis} is a conjugation of the verb \str{poder} in the \defn{vosotros} form.
+The vosotros form is only used in the Castilian dialect,
+which is only used in Spain.
+All other Spanish dialects use the \defn{ustedes} form instead, 
+which would conjugate the verb as \str{pueden}.
+%We therefore can (correctly) conclude that the tweet was sent from Spain.
 
-\noindent
-A linguist could easily determine that this tweet was sent from Spain.
-The fact that the tweet is in Spanish narrows the likely sources to 
-Spanish speaking countries (e.g. Spain, Mexico, Argentina) 
-or countries with a large Spanish minority (e.g. USA, Philippines).
-The clue that this tweet was sent from Spain, however, is the word \str{pod\'eis}.
-This word is a conjugation of the verb \str{poder} in the so-called \defn{vosotros} form.
-The vosotros verb conjugations are only found in the Castilian Spanish dialect used in Spain.
-All other dialects use the so-called \defn{ustedes} form, which would conjugate the verb as \str{pueden}.
-
-Our system \uniloc~ uses the above reasoning to identify that this tweet comes from Spain.
-\uniloc further creates a detailed probability distribution over the GPS coordinates that the tweet is likely to have been sent from,
-and identifies key letters in the tweet that are highly important in determining its location 
+\uniloc\ uses the above reasoning to correctly identify that this tweet comes from Spain,
+and further creates a detailed probability distribution over the GPS coordinates that the tweet is likely to have been sent from
 (see Figure \ref{fig:poder}).
-\uniloc was given no prior knowledge of these verb conjugations or geographic patterns,
-and learned this relationship completely from scratch.
+A key feature of \uniloc\ is that it was not preprogrammed with this linguistic pattern.
+Instead, it learned the pattern from scratch using a novel character level convolutional neural network (CNN). 
+This CNN can take any unicode character as input,
+and it learns similar patterns for English, Arabic, Japanese, and the more than \fixme{} languages present in our dataset.
+Furthermore, these patterns generalize to words not present in the original training set.
+For example, the Spanish verb \str{fallecer} is conjugated as \str{fallec\'eis} in the Castilian vosotros form.
+This word is not present in our training set,
+yet \uniloc\ is still able to understand that \str{fallec\'eis} is likely to have been written in Spain.
 
+%and identifies key letters in the tweet that are highly important in determining its location 
 
 \begin{figure}
     \resizebox{0.485\textwidth}{!}{\includegraphics{img/infer/2}}
@@ -891,11 +923,8 @@ and learned this relationship completely from scratch.
     \label{fig:poder}
 \end{figure}
 
-%Our system UniLoc was able to correctly determine that this tweet was sent from Spain by taking advantage of dialectical differences between Spanish as spoken in Spain and Latin
-%This tweet was sent from Madrid, Spain, and our system UniLoc was able to correctly determine this.
-
-\noindent
-\textbf{Why care about geolocation?}
+\begin{description}
+\item[Why care about geolocation?]
 Many important applications rely on geotagged tweets.
 For example, geotagged tweets have been used to map the spread of influenza \citep{paul2014twitter,santillana2015combining},
 for measuring the impact of earthquakes \citep{sakaki2010earthquake},
@@ -912,10 +941,10 @@ Previous work has used geotagged language models to map the dialects of American
 Furthermore, because our language model combines so many different languages,
 and can form the basis for multilingual classification tasks using transfer learning \citep{wang2015transfer,howard2018fine}.
 
-\noindent
-\textbf{Prior work on geolocation}.
+\item[Prior work on geolocation.]
 A large body of work has formed around the problem of geolocating tweets.
 
+\citet{maier2014language} considers geolocating Spanish tweets.
 \citet{hays2008im2gps} performs image geolocation down to the gps coordinate level using $k$-nearest neighbor queries and then builds a kernel density estimate of the distribution.
 \citet{crandall2009mapping} uses a classification strategy.
 \citet{weyand2016planet} discretizes the world in a semantically meaningful method.
@@ -939,11 +968,9 @@ because most tweets are neither located in the United States nor in English (see
     \label{fig:country/lang}
 \end{figure}
 
-\noindent
-\textbf{Prior work on multilanguage models.}
+\item[Prior work on multilanguage models.]
 
-\noindent
-\textbf{Our contributions.}
+\item[Our contributions.]
 Our contributions include:
 \begin{enumerate}
     \item
@@ -978,6 +1005,10 @@ The \str{lang} field of a tweet is determined automatically by the twitter softw
 \citet{blodgett2016demographic} show that existing language prediction tools such as \str{lang.py} \citep{lui2012langid} perform poorly relative to the \str{lang} field of the json object.
 This effect is exacerbated when the tweets exhibit dialectical differences from the formal version of their language.
 
+\item[Paper Outline.]
+
+\end{description}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\subsection{Identifying tweet location vs user location}
 %
@@ -987,17 +1018,6 @@ This effect is exacerbated when the tweets exhibit dialectical differences from 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Problems with word-level features}
 
-%\begin{description}
-    %\item[English]. 
-        %Example of \str{York} vs \str{New York}.  
-        %Spelling patterns like \str{color} vs \str{colour} and \str{theater} vs \str{theatre}.
-    %\item[German]. Lots of compound words.
-    %\item[Japanese]. Does not use spaces to differentiate between words.  Uses three different alphabets.
-    %\item[Spanish]. Verb conjugations for informal 2nd person are different in different countries.
-    %\item[Arabic]. Conjugations differ.
-%
-%\end{description}
-
 Traditional text mining generates word level features in a three step process:
 First, the input text is tokenized to extract words from the text.
 Second, these 
@@ -1006,12 +1026,13 @@ This process works well for English-only text corpora,
 but is essentially impossible in the highly multi-lingual corpus we consider.
 In this section, we highlight four problems with these word-level features.
 
-\begin{description}[style=unboxed,leftmargin=0cm]
+\begin{description}
     \item[Tokenization in multilingual corpora is difficult.]
         Tokenization of English text is easy because spaces are used to separate words.
         Other languages, however, do not have similar cues to separate words.
         For example, Chinese and Japanese do not use spaces at all,
         and Vietnamese traditionally uses spaces between syllables even within words.
+        Germanic languages use frequent compound words.
         Good tokenizers for these languages have existed for decades \citep[e.g.][]{fung1998extracting,huyen2008hybrid},
         however these tokenizers have four limitations that make them unsuitable for our task:
         First, they require that the text's language be known a priori so that an appropriate tokenization routine can be called.
@@ -1079,98 +1100,135 @@ and \citet{eisenstein2013phonological} shows that this phenomenon carries over i
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{The prediction models}
+\begin{figure*}
+\noindent\input{img/hr-en}
+\noindent\input{img/hr-es}
+\caption{
+    Different countries tweet in different languages and at different times of the day.
+    For example, tweets sent in English are almost always sent from the United States,
+    except around 9AM UTC (2AM PST).
+    Tweets sent in Spanish are likely to be sent from either Argentina (from 2200UTC-0400UTC), Mexico (0500-0600UTC), or Spain (0600-2200UTC).
+}
+\label{fig:time-lang}
+\end{figure*}
+
+\newpage
+\section{The prediction task}
+
+We use the Twitter API to collect all the geotagged tweets sent from \fixme{}.
+In total, the dataset contains \fixme{} messages written in more than \fixme{} languages.
+Each tweet is associated with a JSON object.
+This JSON object contains main fields, and we classify them into three types:
+location, tweet content, and user metadata.
+
+\begin{description}
+\item[Location.]
+We are interested in predicting the location of tweets at two levels of granularity:
+the country of origin and exact GPS coordinates.
+There are three fields of the JSON object which contain JSON information at different levels of granularity.
+\str{geo}, \str{place}, and \str{country\_code}.
+When a tweet is sent, the user has the option of specifying the granularity of the tweet's location information.
+The \str{geo} field contains exact GPS coordinates that the tweet was sent from.
+Approximately \fixme{} percent of the tweets in our dataset contain exact GPS coordinates.
+The \str{place} field contains detailed information about the neighborhood, city, county, state, or country that the tweet was sent from.
+The field defines a bounding box around the region and we take the centroid of the region as the tweet's true GPS coordinates.
+The \str{country\_code} field specifies the country the tweet was sent from.
+
+\item[Tweet Content.]
+Each tweet is associated with three types of content:
+The text of the tweet,
+the language of the tweet,
+and the time of the tweet.
+
+\item[User Metadata.]
+The JSON object also contains significant information about the user who sent the tweet.
+For example, it contains user specified timezone and location fields.
+These fields are known to be highly correlated with the true locations above \citep{hecht2011tweets,schulz2013multi,han2014text}.
+The timezone provides a surprisingly large amount of detail about a tweet's location.
+Knowledge of the timezone transforms the problem into only predicting latitude.
+For example, essentially all tweets in Hawaiian Standard Time fit within a small 100km radius, which means the text doesn't even have to be examined.
+Similarly, Korea and Japan have essentially the same longitude, and so use the same time.
+But they have different timezones (denoted Korea Standard Time and Japan Standard Time).
+Knowledge of the timezone in these cases is sufficient to completely determine the country of origin.
+
+The Twitter API also has tools to retrieve information about a user's previous tweets and the user's social graph.
+
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{The model}
 
 \begin{figure*}
     \centering
-    \input{fig/model}
+    %\input{fig/model}
     \caption{The general model framework. \fixme{}}
     \label{fig:model}
 \end{figure*}
 
-\begin{table}
-    \centering
-    \input{fig/hyperparam}
-    \caption{The model's hyperparameters.}
-    \label{tab:hyperparam}
-\end{table}
+%\begin{table}
+    %\centering
+    %\input{fig/hyperparam}
+    %\caption{The model's hyperparameters.}
+    %\label{tab:hyperparam}
+%\end{table}
 
-The structure of our model is shown in Figure \ref{fig:model},
-and Table \ref{tab:hyperparam} shows the model's hyperparameters. 
-We use the tweet content (ignoring metadata) as input into the model.
-Then we divide the model itself into three stages:
+The structure of our model is shown in Figure \ref{fig:model}.
+The model is divided into three stages:
 feature generation, feature mixing, and output.
 The model's output is then compared against the location data in the tweet to measure its efficacy.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Twitter data}
-
-The Twitter API associates a JSON object with each tweet,
-and this JSON object contains many details about the tweet.
-
-%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Metadata}
-
-We do not consider the metadata associated with a tweet. 
-Because this metadata is easy to collect,
-it is easy to add to other models \citep{han2014text}.
-
-\begin{description}
-    \item[user generated metadata] 
-        There are too many types of user generated metadata to discuss them all in detail,
-        so we focus our discussion on the user's location and timezone fields.
-
-        \citet{schulz2013multi} uses user specified location for prediction.
-        \citet{hecht2011tweets} studies accuracy of user specified location field.
-
-        Many tweets have an associated timezone.
-        Some previous work \citep{schulz2013multi,han2014text} has considered the timezone to be part of the tweet's contents and used this for prediction,
-        however we consider this to be a mistake.
-        The timezone provides a surprisingly large amount of detail about a tweet's location.
-        Knowledge of the timezone transforms the problem into only predicting latitude.
-        For example, essentially all tweets in Hawaiian Standard Time fit within a small 100km radius, which means the text doesn't even have to be examined.
-        Similarly, Korea and Japan have essentially the same longitude, and so use the same time.
-        But they have different timezones (denoted Korea Standard Time and Japan Standard Time).
-        Knowledge of the timezone in these cases is sufficient to completely determine the country of origin.
-        
-    \item[previous tweets]
-    \item[social graph]
-\end{description}
-
-Introduce a multilingual dataset and the first methods for geolocating non-English tweets.
-They use a hierarchical model that first determines the language,
-then selects a model appropriate for the language.
-Make heavy use of twitter metadata (e.g. tweet time) to determine location.
-Perform a test on time where they evaluate their model on data collected 1 year after the training data, and show a significant performance loss.
-Studies the privacy implications of geolocation.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Feature generation}
 
 Our feature generation procedure is inspired by recent trends in deep learning and natural language processing.
 A key idea of recent deep learning methods is that automatically learned features can perform much better than hand-crafted features.
+The experiments in Section \ref{sec:experiments} shows how each of these sets of features contributes to the final output.
 
 \begin{description}
-    \item[hand-crafted, word-level features]
-        All previous work on twitter geolocation has essentially relied on hand-crafted features.
+\item[Character-level features.]
+We use a \defn{convolutional neural network (CNN)} to generate character-level features.
+Specifically, our model is a variant of the CLCNN \citep{zhang2015character} which we've modified to work in the multi-language setting.
 
-        \citet{han2012geolocation} study a method of determining location indicative words using an information gain strategy.
+Alternative character-level models use deeper CNNs with resnet connections \citep{conneau2017very}, recurrent neural networks \citep{chung2016character}, or complex combinations of CNNs and RNNs \citep{kim2016character,jozefowicz2016exploring}.
+Each of these techniques requires considerable processing resources, however, 
+so we did not have the resources to exhaustively compare these techniques to each other on this task.
+We chose to base our model off of the CLCNN model because it had the best performance on a small held-out subset of tweets.
+All of these techniques were originally designed to work on relatively small mono-lingual corpuses.
+The largest dataset used in the papers above is \fixme{},
+whereas our dataset is \fixme{}.
 
+Deep learning techniques have also been applied to Twitter data.
+%Character-level models have previously been applied to twitter NLP tasks \citep[e.g.][]{dhingra2016tweet2vec,severyn2015unitn},
+%but never to the geolocation problem.
+For example, 
+\citet{severyn2015unitn} use a word level CNN for sentiment classification on tweets,
+and \citet{dhingra2016tweet2vec} use a character level GRU network to predict hashtags.
+Ours is the first application of deep learning techniques to the geolocation problem,
+uses the largest dataset,
+and the first multilingual dataset.
+%Their dataset contains only 2 million tweets, whereas our dataset contains \fixme{}.
 
-    \item[automatically generarated, character-level features]
-        We use a \defn{convolutional neural network (CNN)} to generate character-level features.
-        Character-level models have previously been applied to twitter NLP tasks \citep[e.g.][]{dhingra2016tweet2vec,severyn2015unitn},
-        but never to the geolocation problem.
-        %\citet{dhingra2016tweet2vec} creates a vector space model of tweets using a character level recurrent GRU network.
-        %\citet{severyn2015unitn} use a word level CNN for sentiment classification on tweets.
+\item[Word-level features.]
+All previous work on twitter geolocation has essentially relied on hand-crafted world-level features.
+\citet{han2012geolocation} study a method of determining location indicative words using an information gain strategy.
 
-        Specifically, our model is a variant of the CLCNN \citep{zhang2015character} which we've modified to work in the multi-language setting.
-        Alternative character-level models use deeper CNNs with resnet connections \citep{conneau2017very}, recurrent neural networks \citep{chung2016character}, or complex combinations of CNNs and RNNs \citep{kim2016character,jozefowicz2016exploring}.
-        Each of these techniques requires considerable processing resources, however, 
-        so we did not have the resources to exhaustively compare these techniques to each other on this task.
-        We chose to base our model off of the CLCNN model because it has the best performance on a small held-out subset of tweets.
+\item[Time features.]
+The twitter API specifies time using the standard Unix Epoch Time 
+(i.e. milliseconds since 1 Jan 1970).
+From this we generate 
 
-    \item[topological time features]
+\item[Language features.]
+There are two ways to incorporate language of a tweet into our model.
+The first is to use the Twitter API's language field directly 1-hot encoded.
+This is a simple technique, but has three drawbacks:
+(i) the Twitter API supports many fewer languages than are actually used on Twitter;
+(ii) the Twitter API occasionally makes mistakes on which language the tweet was sent in;
+(iii) Twitter uses an undisclosed algorithm to determine the language,
+and this algorithm is likely to leak user-level meta-information.
+
+An alternative is to try to learn the language directly.
+
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1201,6 +1259,8 @@ and continuous outputs that estimate the \geo field.
 %Whereas previous work requires a number of assumptions about the output fields,
 %our work makes few assumptions.
 
+\begin{description}
+\item[Discrete outputs.]
 The discrete outputs are conceptually the simplest,
 and for this reason they are the most commonly used in previous work.
 The idea is to treat a tweet's \place and \country fields as labels for the tweet,
@@ -1220,11 +1280,13 @@ Those tweets that do not originate from a city are either discarded or assigned 
 More complicated methods of discretizing the Earth's surface have also been developed for non-Twitter applications.
 For example, Google developed a large scale system for geolocating images that uses specially designed partition of the earth's surface that they call S2 \citep{weyand2016planet}.
 
+\item[Angular regression.]
 We introduce novel methods for predicting the \geo field that take advantage of the non-euclidean nature of the earth's surface.
 \citet{duong2016near} is the only previous work to attempt to estimate the \geo field of a tweet.
-They use the ordinary least squares regression model with the standard $L2$ loss between GPS coordinates.
+They use the ordinary least squares regression model with the standard $L2$ loss between GPS coordinates:
 \begin{equation}
     \latd^2 + \lond^2
+    .
 \end{equation}
 Unfortunately, the surface of the earth is highly non-euclidean, 
 and the OLS model is known to work only in the euclidean setting \citep[e.g.][]{fisher1992regression}.
@@ -1242,37 +1304,42 @@ For example:
 \end{enumerate}
 
 The so-called \emph{angular regression} fixes these problems \citep{fisher1992regression}.
+\citet{fisher1992regression} was the first to propose a method for regression onto the surface of a sphere.
 
 The \emph{great circle distance} is a better distance metric for gps coordinates because it is the distance of the shortest path between two points on the earth's surface.
 The naive computation of the great circle distance is unfortunately numerically unstable and cannot be used directly.
 Fortunately, \citet{vincenty1975direct} proposed a numerically stable method for computing the GCD which we use in our work.
-It is defined as
-\begin{align}
-    \delta\sigma 
-    &=
-    \arctan\left(
-        \frac
-        {\sqrt{(\cos\lata\cdot\sin\lond)^2 + (\cos\lata\cdot\sin\latb-\sin\lata\cdot\cos\latb\cdot\cos\lond)^2}}
-        {\sin\lata\cdot\sin\latb + \cos\lata\cdot\cos\latb\cdot\cos\lond}
-    \right)
-\end{align}
-
-\citet{fisher1992regression} was the first to propose a method for regression onto the surface of a sphere.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Experiments}
+Figure \ref{fig:vincenty} shows the formula.
 
 \begin{figure*}
-\noindent\input{img/hr-es}
-\caption{}
+    \centering
+    %\begin{align}
+    $
+    \displaystyle
+        \delta\sigma 
+        =
+        \arctan\left(
+            \frac
+            {\sqrt{(\cos\lata\cdot\sin\lond)^2 + (\cos\lata\cdot\sin\latb-\sin\lata\cdot\cos\latb\cdot\cos\lond)^2}}
+            {\sin\lata\cdot\sin\latb + \cos\lata\cdot\cos\latb\cdot\cos\lond}
+        \right)
+    $
+    %\end{align}
+    \caption{The Vincenty formula for numerically stable great circle distances.}
+    \label{fig:vincenty}
 \end{figure*}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
+\item[Mixture of FvM.]
+
+\end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Experiments}
+\label{sec:experiments}
 
-\section{Results}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newpage
 \appendix
@@ -1505,30 +1572,30 @@ They show a large performance gap between real world performance and the idealiz
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Other applications of social network analysis}
-
-\citet{ruiz2012correlating} uses tweets to predict financial markets.
-
-\citet{wiley2014pharmaceutical} uses tweets to measure the effectiveness and user satisfaction of new drugs.
+%\subsection{Other applications of social network analysis}
+%
+%\citet{ruiz2012correlating} uses tweets to predict financial markets.
+%
+%\citet{wiley2014pharmaceutical} uses tweets to measure the effectiveness and user satisfaction of new drugs.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Deep learning}
-
-\citet{kim2016character} proposes using character level CNNs, RNNs, and Highway Networks for language translation.
-\citet{chung2016character} also proposes character level RNNs and highway nets for translation.
-\citet{jozefowicz2016exploring} is a generic classification paper for character level text processing.  
-Uses a combination of CNNs and RNNs, and a hierarchical softmax which might be useful for locations.
-
-\citet{dhingra2016tweet2vec} creates a vector space model of tweets using a character level recurrent GRU network.
-\citet{severyn2015unitn} use a word level CNN for sentiment classification on tweets.
-
-\citet{conneau2017very} use resnet like connections to create very deep character cnns for text classification.
-\citet{zhang2015character} use a smaller depth character CNN, which is what I've implemented so far.
-
-\citet{weyand2016planet} do geolocation of photos using image CNNs.
-They divide the globe into 26263 regions, and use a xentropy loss over those regions.
-Regions are of different sizes so that they all contain approximately the same number of photos.
+%\subsection{Deep learning}
+%
+%\citet{kim2016character} proposes using character level CNNs, RNNs, and Highway Networks for language translation.
+%\citet{chung2016character} also proposes character level RNNs and highway nets for translation.
+%\citet{jozefowicz2016exploring} is a generic classification paper for character level text processing.  
+%Uses a combination of CNNs and RNNs, and a hierarchical softmax which might be useful for locations.
+%
+%\citet{dhingra2016tweet2vec} creates a vector space model of tweets using a character level recurrent GRU network.
+%\citet{severyn2015unitn} use a word level CNN for sentiment classification on tweets.
+%
+%\citet{conneau2017very} use resnet like connections to create very deep character cnns for text classification.
+%\citet{zhang2015character} use a smaller depth character CNN, which is what I've implemented so far.
+%
+%\citet{weyand2016planet} do geolocation of photos using image CNNs.
+%They divide the globe into 26263 regions, and use a xentropy loss over those regions.
+%Regions are of different sizes so that they all contain approximately the same number of photos.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
