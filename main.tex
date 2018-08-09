@@ -154,7 +154,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\title{Geolocating Tweets in any Language at any Location}
-\title{A Universal Language Model with Application to Tweet Geolocation}
+%\title{A Universal Language Model with Application to Tweet Geolocation}
+\title{Highly Multilingual Tweet Geolocation with \\ Unicode Convolutional Neural Networks}
 %\titlenote{Produces the permission block, and copyright information}
 %\subtitle{}
 %\subtitlenote{The full version of the author's guide is available as \texttt{acmart.pdf} document}
@@ -172,18 +173,25 @@
     %We consider the problem of determining the GPS coordinates that a tweet was sent from based only on its text.
     %We introduce a novel character-level convolutional neural network that can accept any Unicode character as input,
     Most social media messages are written in languages other than English,
-    but our best text mining tools work only for English.
+    but commonly used text mining tools were designed only for English.
     %Those that work for non-English languages require that the language be known in advance and do not allow the language to change mid-sentence.
-    This paper introduces a method for analyzing highly multilingual text corpora in a simple, unified manner.
-    We make no assumption that the text's language is known in advance,
-    and we allow the language to change arbitrarily mid-sentence.
-    The key to our method is a novel \defn{Unicode Convolutional Neural Network} (UnicodeCNN) that accepts any Unicode string as input.
-    To validate our approach, we consider the task of determining the GPS coordinates that a tweet was sent from based only on its message contents.
-    Our dataset contains 900 million tweets written in more than 100 languages.
-    We show that the UnicodeCNN significantly outperforms baseline best-practices when working with English-only text.
-    Due to the high-quality featuers of the UnicodeCNN,
-    we are able to predict the exact GPS coordinates that tweets were sent from using a novel mixture of Fisher-von Mises distributions.
-    Previous state-of-the-art work restricted itself to predicting he country or city the tweet was sent from, and filtered out particularly ``hard'' tweets from their evaluation datasets.
+    This paper introduces the \defn{Unicode Convolutional Neural Network} (UnicodeCNN) for analyzing text written in any language.
+    The UnicodeCNN does not require the language to be known in advance,
+    allows the language to change arbitrarily mid-sentence,
+    and is robust to the misspellings and grammatical mistakes commonly found in social media.
+    %that accepts any Unicode string as input.
+    %We make no assumption that the text's language is known in advance,
+    %and we allow the language to change arbitrarily mid-sentence.
+    We demonstrate the UnicodeCNN's effectiveness on the challenging task of content-based tweet geolocation using a dataset with 900 million tweets written in more than 100 languages.
+    %To validate our approach, we consider the task of determining the GPS coordinates that a tweet was sent from based only on its message contents.
+    %Our dataset contains 900 million tweets written in more than 100 languages.
+    %We show that the UnicodeCNN significantly outperforms baseline best-practices when working with English-only text.
+    Remarkably, the UnicodeCNN can learn geographical knowledge in one language and automatically transfer that knowledge to other languages.
+    %(ii) we predict exact GPS coordinates, whereas previous work predicted only country or city of origin;
+    %(iii) we 
+    %Due to the high-quality features of the UnicodeCNN,
+    %we are able to predict the exact GPS coordinates that tweets were sent from using a novel mixture of Fisher-von Mises distributions.
+    %Previous state-of-the-art work restricted itself to predicting only the country or city the tweet was sent from, and filtered out particularly ``hard'' tweets from their evaluation datasets.
     %A disadvantage of our UnicodeCNN approach is that deep neural networks are notoriously difficult to interpret compared to simpler linear models, but we mitigate this disadvantage by introducing a novel method for visualizing the activations of our UnicodeCNN.
     %and we apply this visualization to discover dialectical differences between geographical regions.
 
@@ -255,8 +263,15 @@ More than 100 languages are known to be actively used on Twitter \citep{hong2011
 and while English is still the most popular, its popularity is shrinking.
 An analysis of tweets sent in 2012 found that 53\% of tweets were written in English \citep{han2014text},
 but our analysis of tweets sent in 2018 shows that only 42\% of tweets were written in English.
+%While English and other popular languages have been well studied,
+%less popular languages have received relatively little attention.
+%This is unfortunate because approximately 80 million tweets are sent everyday in a language that is not one of Twitter's ten most popular languages.
 This percentage will likely continue to fall
 as more people in non-English speaking countries connect to the internet and begin using social media.
+%Approximately 16\% of tweets are sent in either a language that Twitter doesn't officially support or one of Twitter's 55 least popular official languages.
+%In absolute numbers, this is about 80 million tweets per day.
+%Approximately 8\% of tweets are sent in Twitter's 55 least popular languages,
+%and a further 8\% of tweets are sent in languages that the Twitter API does not officially support.
 New multilingual data analysis tools are needed to better serve these emerging non-English communities.
 %Many language communities are poorly served by state-of-the-art text analysis tools,
 %which are designed for English and similarly popular languages.
@@ -265,26 +280,31 @@ New multilingual data analysis tools are needed to better serve these emerging n
 %and understudied.
 
 This paper introduces the \defn{Unicode Convolutional Neural Network} (UnicodeCNN) for analyzing multilingual social media text.
-Convolutional neural networks have previously been successfully applied to English-only text corpora \citep{zhang2015character,conneau2017very},
+The UnicodeCNN operates directly on the Unicode characters in the input text and requires no preprocessing or lexical analysis.
+Character-level convolutional neural networks have previously been successfully applied to text corpora containing only English \citep{zhang2015character,conneau2017very} or a limited number of European languages \citep{lee2016fully,wehrmann2017character},
 but our UnicodeCNN can take any Unicode string as input and therefore works with all languages.
-Many bi-lingual models have been developed for various natural language tasks,
-but multi-lingual models remain rare \citep{ruder2017survey}.
-We believe the UnicodeCNN is the first model designed to work on all languages simultaneously.
-Furthermore, the UnicodeCNN is especially suited to analyzing social media text because it is naturally robust to the spelling mistakes and non-standard grammar commonly found in this domain.
+We use the same model to analyze English, Arabic, Japanese, and the more than 100 other languages present in our Twitter dataset.
+%Amazingly, we show that information learned in one language can be transfered to other languages.
+%Many bi-lingual models have been developed for various natural language tasks,
+%but multi-lingual models remain rare \citep{ruder2017survey}.
+%We believe the UnicodeCNN is the first model designed to work on all languages simultaneously.
+The UnicodeCNN is particularly well-suited to analyzing social media text because it is naturally robust to the spelling mistakes and non-standard grammar commonly found in this domain.
 %As an extreme example, \defn{Arabizi} is a newly developing dialect of the Arabic language found only in social media platforms.
 %Arabizi consists of a mixture of Latin and Arabic characters in a single message,
 
 We apply the UnicodeCNN to the challenging problem of \defn{content-based tweet geolocation},
 or predicting the GPS coordinates a tweet was sent from based only on its text.
-Our UnicodeCNN significantly improves the geolocation state-of-the art in three ways.
-First, most prior work considers only English language tweets \citep{cheng2010you,kinsella2011m,li2012towards,han2013stacking,mahmud2014home,compton2014geotagging,zhang2014geocoding,rahimi2015twitter,dredze2016geolocation,rahimi2017neural},
+Geolocation is a well-studied problem,
+and our UnicodeCNN significantly improves the state-of-the-art in three ways.
+First, most prior work considers only English-language tweets \citep{cheng2010you,kinsella2011m,li2012towards,han2013stacking,mahmud2014home,compton2014geotagging,zhang2014geocoding,rahimi2015twitter,dredze2016geolocation,rahimi2017neural},
 or tweets in a single non-English language like Spanish \citep{maier2014language,gonccalves2015learning,tinoco2017variation} or Italian \citep{paraskevopoulos2015fine}.
 \citet{han2014text} propose the most advanced multilingual system,
 which first detects the language of the tweet,
 then passes the tweet to an appropriate single-language model.
 Each of these single-language models must be developed independently and from scratch,
 and \citet{han2014text} only support Twitter's most popular languages.
-The UnicodeCNN, in contrast, processes all languages in a unified method and seamlessly allows information learned in one language to be transferred to another language.
+The UnicodeCNN, in contrast, processes all languages in a unified method.
+Remarkably, we show that geographic information learned in one language is automatically learned in other languages as well even when that information is not directly represented in the training data.
 Second, all previous work considered only a subset of tweets that were particularly easy to geolocate.
 In particular, all works cited above filter their datasets to contain only tweets sent from certain countries or major cities.
 The UnicodeCNN generates high quality features that work everywhere in the world,
@@ -405,8 +425,8 @@ Section \ref{sec:experiments} shows the experimental results showing that our me
 \section{Qualitative Overview}
 
 Before describing our model in detail,
-we present some simple experiments.
-We use these experiments to introduce the details of the geolocation problem,
+we present some simple examples.
+We use these examples to introduce the details of the geolocation problem,
 and demonstrate the qualitative ability of our UnicodeCNN model to learn complex language features.
 
 %We now consider two examples that illustrate the difficulty of the geolocation problem and the power of the UnicodeCNN compared with other methods.
@@ -436,7 +456,7 @@ and demonstrate the qualitative ability of our UnicodeCNN model to learn complex
     %Consider the following real tweet:
     %Let's try to guess where the following tweet was sent from:
     %This example illustrates the difficulty of the geolocaiton problem by showing how location information is encoded in subtle linguistic patterns within a tweet.
-    This example shows how the UnicodeCNN is able to detect subtle linguistic patterns that other models cannot detect.
+    Our first example illustrates how the UnicodeCNN is able to detect subtle linguistic patterns that other models cannot detect.
     Consider the following Spanish language tweet:
 \begin{quote}
     \str{Qu\'e gran ma\~nana... emocionante.  Pod\'eis ver el v\'ideo abajo en el enlace.}%
@@ -444,10 +464,10 @@ and demonstrate the qualitative ability of our UnicodeCNN model to learn complex
 \end{quote}
 It is easy for standard tools such as \str{langid.py} \citep{lui2012langid} to identify that this tweet is written in Spanish.
 Using this language information, we can conclude
-%The first clue to consider is the tweet's language.
-%Because this tweet was written in Spanish,
 that the tweet was likely sent from a country with a large Spanish-speaking population
 (such as Spain, Mexico, or the United States).
+
+
 We can further refine our guess by using differences in the Spanish dialects spoken in these countries.
 In this tweet, the word \str{pod\'eis} is the most important clue.
 \str{pod\'eis} is a conjugation of the verb \str{poder} in the vosotros form.
@@ -457,28 +477,57 @@ All other Spanish dialects use the ustedes form,
 which would conjugate the verb as \str{pueden}.
 %We therefore can (correctly) conclude that the tweet was sent from Spain.
 
+%\begin{figure}
+    %\resizebox{0.1\textwidth}{!}{\rotatebox{90}{\includegraphics{img/infer/bar-lang-placeholder}}}
+    %\caption{test}
+%\end{figure}
+
+Our UnicodeCNN model correctly identifies that the previous tweet was sent from Spain,
+as shown in the following graph:
+
+\noindent\input{img/infer/ar-kuwait-japanese/0-lo-bar-country2.pgf}
+
+\noindent
+%To demonstrate that our model is able to distinguish between the words \str{pod\'eis} and \str{pueden},
+%we create two artificial tweets
+%\begin{figure}[H]
+    %\centering
+    %\includegraphics[width=0.45\textwidth]{img/infer/bar-lang-placeholder}
+%\end{figure}
+%And running the same model on the word \str{pueden} gives
+If we were to instead replace the word \str{pod\'eis} in the tweet above by the word \str{pueden},
+then our model predicts the following countries
+
+\noindent\input{img/infer/ar-kuwait-japanese/0-lo-bar-country2.pgf}
+
+\noindent
+Remarkably, these patterns generalize to misspellings and words not present in the original training set.
+For example, the Spanish word \str{fallec\'eis} is another verb conjugated in the Castilian vosotros form.
+This word is not present in our training set,
+yet if we replace the word \str{pod\'eis} by \str{fallec\'eis} the model still predicts that the tweet was sent from Spain.
+
+\noindent\input{img/infer/ar-kuwait-japanese/0-lo-bar-country2.pgf}
+
+\noindent
+Previous geolocating systems do not understand these character level differences in dialect,
+and they do not work in our highly multilingual context.
+
 %\uniloc\ uses the above reasoning to correctly identify that this tweet was sent from Spain,
 %and uses even subtler clues to create a detailed probability distribution over the exact GPS coordinates that the tweet is likely to have been sent from
 %(see Figure \ref{fig:poder}).
 
 %A key feature of \uniloc\ is that it was not preprogrammed with any linguistic knowledge.
-\uniloc\ was not preprogrammed with any linguistic knowledge,
-and learned this pattern from scratch using a novel character-level \defn{convolutional neural network} (CNN). 
-This CNN can take any Unicode character as input,
-and can learn similar patterns in any language.
-Our dataset includes the 65 languages officially recognized by the Twitter API,
-and an unknown number of unofficial languages as well.
+%\uniloc\ was not preprogrammed with any linguistic knowledge,
+%and learned this pattern from scratch using a novel character-level \defn{convolutional neural network} (CNN). 
+%This CNN can take any Unicode character as input,
+%and can learn similar patterns in any language.
+%Our dataset includes the 65 languages officially recognized by the Twitter API,
+%and an unknown number of unofficial languages as well.
 %and it learns similar patterns for English, Arabic, Japanese, and the more than 65 languages present in our training data.
-Importantly, these patterns generalize to words not present in the original training set.
-For example, the Spanish word \str{fallec\'eis} is another verb conjugated in the Castilian vosotros form.
-This word is not present in our training set,
-yet \uniloc\ is still able to understand that \str{fallec\'eis} is likely to have been written in Spain based on the conjugation.
-Previous geolocating systems do not understand these character level differences in dialect,
-and they do not work in our highly multilingual context.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \item[Example 2.]
-    This example shows how the UnicodeCNN can learn information in one language and apply it to other languages.
+    This example shows how the UnicodeCNN can learn geographic knowledge in one language and transfer that knowledge to other languages.
 Consider the following tweet sent from Kuwait written in a mixture of English and Arabic:
 \begin{quote}
 \str{I'm at }\foreignlanguage{arabic}{شارع المطاعم}\str{ in }\foreignlanguage{arabic}{الكويت}.%
@@ -491,25 +540,72 @@ In this case, there is no need to analyze subtle linguistic clues to determine w
 To identify this tweet's location, all we need to do is understand that the Arabic word 
 \foreignlanguage{arabic}{الكويت}
 is the name of the country Kuwait.
+Our model successfully does this, 
+and its top predicted countries are
 
-The fact that the word Kuwait is written in Arabic should have little influence on where we guess the tweet was written.
+\noindent\input{img/infer/ar-kuwait-japanese/5-lo-bar-country2.pgf}
+
+%\noindent
+%Our model is able to successfully identify all countries and many large cities or other landmarks in this way.
+%As you would expect, replacing the Arabic name for Kuwait 
+%(\foreignlanguage{arabic}{الكويت})
+%with any other country in the tweet causes the model to output that country with high probability.
+
+Now consider the following plausible scenario:
+A Japanese tourist visits Kuwait and sends a similar tweet but with the Arabic portions translated into Japanese.
+The translated tweet is:
+%The fact that the word Kuwait is written in Arabic should have little influence on where we guess the tweet was written.
 %A good geolocation system should be able to understand messages like this easily.
 %Unsurprisingly, this tweet is easy to geolocate to a region in Kuwait because the location information is directly encoded into the text.
 %If we change the language that the tweet is written in,
 %the geolocation problem should remain just as easy.
 %For example, if we construct the artificial tweet
 %So, for example, if we translate the Arabic word for Kuwait (\foreignlanguage{arabic}{الكويت}) into Japanese (\begin{CJK}{UTF8}{min}クウェート\end{CJK}) to get the tweet
-So, for example, if we translate the Arabic in the previous tweet into Japanese, we get
+%If we translate the Arabic in the previous tweet into Japanese, we get
 \begin{quote}
 %\str{I'm at }\foreignlanguage{arabic}{شارع المطاعم}\str{ in }\begin{CJK}{UTF8}{min}クウェート\end{CJK}.
 \str{I'm at }\begin{CJK}{UTF8}{min}通りレストラン\end{CJK}\str{ in }\begin{CJK}{UTF8}{min}クウェート\end{CJK}.
 \end{quote}
-then we should still predict this tweet was sent from Kuwait.
-Amazingly, the UnicodeCNN is able to predict this tweet was sent from Kuwait even though the Japanese word for Kuwait (\begin{CJK}{UTF8}{min}クウェート\end{CJK}) never appears in our training data.
-The UnicodeCNN learned that \begin{CJK}{UTF8}{min}クウェート\end{CJK} is Japanese for Kuwait by learning that this word encodes a similar sound as the Arabic and English words for Kuwait.
-Furthermore, the UnicodeCNN even understands misspellings of words it learns indirectly in this way.
-If we misspell the Japanese word for Kuwait (for example as \begin{CJK}{UTF8}{min}クウェート\end{CJK}),
-then the UnicodeCNN is still able to understand that the tweet should be located in Kuwait.
+A good model should still guess this tweet was written from Kuwait despite the language change,
+and our model does (but with lower confidence).
+Its output is
+%Clearly, no matter which language this tweet was written in, 
+%we should still guess that it was written in Kuwait.
+%Clearly, the language this tweet is written in should have no influence on where we guess the tweet was written.
+%and in this particular case, we should still guess this Japanese tweet was written in Japan.
+%The language used to write a location should have little influence on where we guess the tweet was written.
+%and we should still predict that this Japanese translation was sent from Kuwait.
+%(A tweet like this might be sent by a Japanese speaker on a work trip to Kuwait.)
+%When given this Japenese tweet, our model's top three predicted countries are
+%And our model still predicts that Kuwait is the most likely country for this Japanese tweet to have been sent from:
+
+\noindent\input{img/infer/ar-kuwait-japanese/8-lo-bar-country2.pgf}
+
+\noindent
+This result is remarkable because the Japanese word for Kuwait (\begin{CJK}{UTF8}{min}クウェート\end{CJK}) never appears in our training data.
+The UnicodeCNN learned that \begin{CJK}{UTF8}{min}クウェート\end{CJK} is Japanese for Kuwait by learning that this word sounds similar to the Arabic and English words for Kuwait.
+    \ignore{
+Furthermore, if we misspell the Japanese word for Kuwait (for example as \begin{CJK}{UTF8}{min}ウェート\end{CJK}),
+then the UnicodeCNN still understands that the location referred to is Kuwait.
+The model's output in this case is
+%}
+%\fixme{
+\noindent\input{img/infer/ar-kuwait-japanese/9-lo-bar-country2.pgf}
+}
+\noindent
+Similar transfers of knowledge hold for many other location and language combinations.
+
+In this example, we chose to mix Japanese and English in a single tweet to demonstrate another advantage of the UnicodeCNN.
+Extracting words from mixed language Japanese/English text is difficult because whereas English uses spaces to delimit words,
+Japanese does not use spaces and relies on context.
+Special Japanese-language parsers have been developed for Japanese-only text,
+but they do not work on mixed languages texts.
+Our model, however, requires no such special parsers and works with any arbitrary combination of languages in a text.
+
+%\begin{figure}[H]
+    %\centering
+    %\includegraphics[width=0.45\textwidth]{img/infer/bar-lang-placeholder}
+%\end{figure}
 
 %Japanese (\begin{CJK}{UTF8}{min}クウェート\end{CJK})
 %The translation of Kuwait in Chinese
@@ -538,9 +634,9 @@ then the UnicodeCNN is still able to understand that the tweet should be located
     and only the rightmost output layers are used for our geotagging application.
     Other output layers can be used for other applications through transfer learning.
     \fixme{beautify.}
-    }
-    }
     \label{fig:model}
+    }
+    }
 \end{figure*}
 
 The structure of our model is shown in Figure \ref{fig:model}.
@@ -563,6 +659,10 @@ First, the characters are encoded into a matrix;
 Second, this matrix is the input to a series of convolutional layers;
 these convolutional layers feed a language predictor module;
 and the language predictor and convolutional layers together generate the final features.
+
+Previous work using Unicode embeddings \citep{gillick2015multilingual,plank2016multilingual} learned directly on the UTF-8 encoding of Unicode characters.
+This biases the models towards Latin languages (since their characters have simpler UTF-8 encodings)
+and does not take advantage of the considerable amount of information baked into each Unicode code point.
 
 \begin{description}
 \item[Characer Encoding.]
@@ -670,6 +770,7 @@ Set to 1 if the character is the first character in a transliteration string.
     Bit $60+r$ is then set to 1.
 \end{description}
 
+\ignore{
 A weakness of our transliteration scheme is that certain characters should be transliterated in different ways depending on context,
 but we ignore context.
 The simplest type of context is the language of the text.
@@ -689,6 +790,9 @@ which transliterate \begin{CJK}{UTF8}{min}東\end{CJK} as \str{tou} and \str{hig
 Certain proper nouns, however, use the rarer Nanori pronunciation, which for  \begin{CJK}{UTF8}{min}東\end{CJK} can be any of \str{ai}, \str{agari}, \str{ko}, \str{saki}, \str{shino}, \str{hajime}, \str{higa}, or \str{moto} depending on the name.
 These difficulties are most pronounced in East Asian languages,
 and a more sophisticated transliteration scheme could therefore possibly improve performance for these languages.
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \item[Character Convolutions.]
     The character encoding matrix described above is passed as the input to a series of six temporal convolutional layers.
@@ -966,9 +1070,47 @@ Figure \ref{fig:vincenty} shows the formula.
 \section{Experiments}
 \label{sec:experiments}
 
-In this section, we describe our dataset, baseline comparison models, training procedures, and our experimental results.
+We now describe our dataset, 
+training and evaluation method, 
+baseline comparison models, 
+and results.
 
 \begin{description}
+        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item[Dataset.]
+Our dataset contains all tweets with geolocation information sent between 26 October 2017 and 08 July 2018.
+The dataset contains approximately 900 million tweets written by $3.0$ million users.
+Unlike previous work, 
+we perform no filtering to remove ``hard'' tweets from the dataset,
+and as a result our dataset is orders of magnitude larger than previously used datasets.
+
+%The WORLD dataset \citep{han2012geolocation} contains $1.4\times10^6$ users and $12\times10^6$ tweets.
+The largest previously used dataset for geolocating tweets was previously the WORLD+ML dataset \citep{han2014text},
+which contains only $23$ million tweets written by $2.1$ million users.
+WORLD+ML includes tweets in all languages,
+but removes hard-to-geolocate tweets that are not close to major cities.
+Whereas the WORLD+ML dataset contained only 47\% non-English tweets,
+our dataset contains 68\% non-English tweets.
+Other datasets such as the WNUT \citep{han2016twitter}, WORLD \citep{han2012geolocation}, and NA \citep{roller2012supervised}
+additionally remove non-English tweets and so are considerably smaller.
+
+For each tweet in our dataset, we associate a country and GPS coordinates using the Twitter API.
+The Twitter API defines a total of 247 unique country codes that a tweet can be sent from.
+This number is larger than the number of sovereign states recognized by the United Nations (206)
+because many non-countries (e.g.\ Puerto Rico and Hong Kong) are given country codes.
+The process of assigning GPS coordinates is slightly more complicated.
+User privacy settings allow Twitter to share the exact GPS coordinates of approximately 16\% of tweets in our dataset.
+For the remaining tweets, privacy settings restrict the accuracy that the tweet's location can be shared to a higher level, typically the city.
+In this case, we take the center of mass of the associated city as the true GPS location of the tweet.
+There are approximately 3 million unique city-level locations reported by the Twitter API.
+The WNUT \citep{han2016twitter}, WORLD \citep{han2012geolocation}, and WORLD+ML \citep{han2014text} datasets generated class labels using a complex procedure to:
+(i) select approximately the 3000 most populated of these cities,
+(ii) combine them with nearby cities into a single metropolitan area which serves as the class label,
+and (iii) discard all tweets from cities not from these metropolitan areas.
+Clearly, significant amounts of information are lost when creating class labels in this way.
+Our method of using the GPS coordinates preserves as much information from the tweet as possible and creates a more challenging prediction problem.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -995,67 +1137,21 @@ In this section, we describe our dataset, baseline comparison models, training p
     \label{fig:country/lang}
 \end{figure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\item[Dataset Overview.]
-Our dataset contains all tweets with geolocation information sent between 26 October 2017 and 08 July 2018.
-The dataset contains approximately 900 million tweets written by $3.0\times10^6$ users.
-Unlike previous work, 
-we perform no filtering to remove ``hard'' tweets from the dataset,
-and as a result our dataset is orders of magnitude larger than previously used datasets.
-
-%The WORLD dataset \citep{han2012geolocation} contains $1.4\times10^6$ users and $12\times10^6$ tweets.
-The largest previously used dataset for geolocating tweets was previously the WORLD+ML dataset \citep{han2014text},
-which contains only $23\times10^6$ tweets written by $2.1\times10^6$ users.
-WORLD+ML includes tweets in all languages,
-but removes hard-to-geolocate tweets that are not close to major cities.
-Whereas the WORLD+ML dataset contained only 47\% non-English tweets,
-our dataset contains 68\% non-English tweets.
-Other datasets such as the WNUT \citep{han2016twitter}, WORLD \citep{han2012geolocation}, and NA \citep{roller2012supervised}
-additionally remove non-English tweets and so are considerably smaller.
-
-For each tweet in our dataset, we associate a country and gps coordinates using the Twitter API.
-The Twitter API defines a total of 247 unique country codes that a tweet can be sent from.
-This number is larger than the number of sovereign states recognized by the United Nations (206)
-because many non-countries (e.g.\ Puerto Rico and Hong Kong) are given country codes,
-and a country code is reserved for tweets sent from outside the border of any country (e.g.\ tweets from international waters).
-The process of assigning GPS coordinates is slightly more complicated.
-The Twitter API associates exact GPS coordinates with approximately 16\% of tweets in our dataset.
-For the remaining tweets, user privacy settings restrict the accuracy that the tweet's location can be known to a higher level, typically the city.
-We take the center of mass of these cities as the true GPS location of the tweet.
-There are approximately 3 million unique city-level locations reported by the Twitter API.
-The WNUT \citep{han2016twitter}, WORLD \citep{han2012geolocation}, and WORLD+ML \citep{han2014text} datasets generated class labels using a complex procedure to:
-(i) select approximately the 3000 most populated of these cities,
-(ii) combine them with nearby cities into a single metropolitan area which serves as the class label,
-and (iii) discard all tweets from cities not from these metropolitan areas.
-Clearly, significant amounts of information are lost when creating class labels in this way.
-Our method preserves this information and results in a more difficult prediction problem.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{table*}
 \input{img/tables/all}
-\input{img/tables/all_minus_en}
-\label{table:results}
+%\input{img/tables/all_minus_en}
 \textbf{
 \caption{
-    Results.
+    The UnicodeCNN features give the best results across all measures,
+    with the larger UnicodeCNN's giving better results than the smaller ones.
+    Recall that smaller values indicate better performance for average distance and larger values are better for accuracy.
+    \label{table:results}
 }
 }
 \end{table*}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\item[Training and Hyperparameter Tuning.]
-We use a single machine with 16 CPUs, 64 GB of RAM, and 6 NVidia Titan x80 GPUs to train our UnicodeCNN model.
-We train using the Adam optimizer \citep{kingma2014adam} with a learning rate of $5\times10^{-4}$ and a batch size of 600.
-We train in using data parallelism, so that each GPU processes 100 tweets per batch, and then the gradients are averaged together.
-The learning rate was set by training only on a small held-out subset of tweets,
-and the batch size of 100/GPU is the largest batchsize we could fit on a GPU with the huge model.
-We observed about a 5-fold speed up using all 6 GPUs,
-and in total, training the large model took about 1 month with this setup.
-Training the huge model seems to take about \fixme{} time.
-We let it train for 2 weeks but then ran out of time.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1122,11 +1218,6 @@ And the social graph \citep{}.
 We do not compare against these models, however, because we are only interested in content-based geolocation.
 }
 
-All baseline models were trained using Adam \citep{kingma2014adam} and random hyperparameter search \citep{bergstra2012random}.
-Random hyperparameter search is a state-of-the-art hyperparameter tuning method that works well when there is more than one hyperparameter to tune.
-For each model, we randomly selected a learning rate, L2 regularization strength, and (for the \str{lang+time+bow} model only) L1 regularization strength in the range $10^{-6}$ to $10^0$ distributed uniformly over the logarithm.
-We trained 20 versions of each model and report only the model with the best country classification accuracy.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%\item[User Metadata.]
@@ -1156,9 +1247,38 @@ We trained 20 versions of each model and report only the model with the best cou
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\item[Results.]
+\item[Training and Evaluation Procedure.]
+We train and evaluate our models in an online fashion using the Adam optimizer \citep{kingma2014adam}.
+That is, we perform a single pass over the dataset.
+For each tweet, we first compute the loss of the model on that tweet;
+then we update the model's parameters.
+The total loss is then the sum of the individual tweet losses.
+We choose this evaluation method because it is a natural model for tweet geolocation where new data can easily be obtained and it is efficient computationally.
 
-Table \ref{table:results} contains the results.
+We use three types of losses to evaluate the models' performance.
+The \defn{distance} measures the average distance between a tweet's true location and the point estimate given by the MFvM output.
+The \defn{accuracy @50km} is the percent of tweets whose distance error is less than 50km.
+The {accuracy @100km, @500km, 1000km, 2000km, and 3000km} measures are similar.
+Finally, the \defn{accuracy @country} measures the percent of tweets whose country of origin was correctly predicted.
+Numeric results are shown in Table \ref{table:results}.
+
+To train the UnicodeCNN models,
+we use a single machine with 16 CPUs, 64 GB of RAM, and 6 NVidia Titan x80 GPUs. 
+We train using the Adam optimizer \citep{kingma2014adam} with a learning rate of $5\times10^{-4}$ and a batch size of 600.
+We train in using data parallelism, so that each GPU processes 100 tweets per batch, 
+and then the gradients are averaged together.
+%The learning rate was set by training only on a small held-out subset of tweets,
+The batch size of 100 tweets/GPU is the largest batchsize we could fit on a GPU with the huge model.
+We observed about a 5-fold speed up using all 6 GPUs,
+and in total, training the large model took about four weeks with this setup.
+Training the huge model seems to take about \fixme{} time.
+We let it train for two weeks but then ran out of time.
+We expect the huge model's performance would continue to slightly improve given more training time.
+
+All baseline models were trained using Adam \citep{kingma2014adam} and random hyperparameter search \citep{bergstra2012random}.
+Random hyperparameter search is a state-of-the-art hyperparameter tuning method that requires no manual intervention and works well when there is more than one hyperparameter to tune.
+For each model, we randomly selected a learning rate, L2 regularization strength, and (for the \str{lang+time+bow} model only) L1 regularization strength in the range $10^{-6}$ to $10^0$ distributed uniformly over the logarithm.
+We trained 20 versions of each model and report only the best model.
 
 \end{description}
 
