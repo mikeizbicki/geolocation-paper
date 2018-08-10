@@ -1,12 +1,22 @@
+\definecolor{darkblue}{RGB}{0,0,127}
 \begin{tikzpicture}
     [ node distance=5mm
-    , li/.style={anchor=west}
-    , l1/.style={ text width=4cm}
-    , tc/.style={anchor=north, text width=4cm}
-    , tc2/.style={li, minimum height=5mm}
-    , box/.style={draw=border, inner sep=2mm, rounded corners=1mm}
-    , us/.style  ={->,line width=2pt,draw=green}
-    , them/.style={->,line width=1pt,draw=red,dotted}
+    %, li/.style={anchor=west}
+    %, l1/.style={ text width=4cm}
+    %, tc/.style={anchor=north, text width=4cm}
+    %, tc2/.style={li, minimum height=5mm}
+    , box/.style=
+        { draw=black
+        , inner sep=2mm
+        , rounded corners=1mm
+        , minimum width=3cm
+        , minimum height=1.3cm
+        , fill=white
+        }
+    , output/.style={box} %, fill=lightblue}
+    %, us/.style  ={->,line width=2pt,draw=green}
+    %, them/.style={->,line width=1pt,draw=red,dotted}
+    , every text node part/.style={align=center}
     ]
     \pgfdeclarelayer{background}
     \pgfsetlayers{background,main}
@@ -15,102 +25,49 @@
     \newcommand{\headerA}[1]{\textbf{#1}}
     \newcommand{\headerB}[1]{\textsc{#1}}
 
-    \node (t) [l1]  at (0,0) {\headerA{Tweet Data}};
-        \node (tc) [tc] at (0,-0.5) {\headerB{Content}};
-            \node (tc0) [right=2mm of tc.west] {};
-            \node (tc1) [below=of tc0.west, tc2] {text};
-            \node (tc2) [below=of tc1.west, tc2] {language};
-            \node (tc3) [below=of tc2.west, tc2] {date/time};
-            \node (tc4) [below=of tc3.west, tc2] {};
-            \node (tc5) [below=of tc4.west, tc2] {};
-        \node (tcB) [box, fit={(tc)(tc5)}] {};
-        \node (tm) [tc] at (5,-0.5) {\headerB{Metadata}};
-            \node (tm1) [below=of tm.west , tc2] {~~previous tweets};
-            \node (tm2) [below=of tm1.west, tc2] {~~social graph};
-            \node (tm3) [below=of tm2.west, tc2] {~~timezone};
-            \node (tm4) [below=of tm3.west, tc2] {~~user specified location};
-            \node (tm5) [below=of tm4.west, tc2] {~~etc.};
-        \node (tmB) [box, fit={(tm)(tm5)}] {};
-        \node (tp) [tc] at (10,-0.5) {\headerB{Location}};
-            \node (tp1) [below=of tp.west , tc2] {~~place};
-            \node (tp2) [below=of tp1.west, tc2] {~~pseudo-place};
-            \node (tp3) [below=of tp2.west, tc2] {~~country};
-            \node (tp4) [below=of tp3.west, tc2] {~~gps};
-            \node (tp5) [below=of tp4.west, tc2] {~~};
-        \node (tpB) [box, fit={(tp)(tp5)}] {};
-    \begin{pgfonlayer}{background}
-        \node [box, fill=lightblue, fit={(t) (tcB) (tmB)(tpB)}] {};
-    \end{pgfonlayer}
+    \node (unicodecnn) [box, draw=blue, opacity=0.5, fill=lightblue, minimum width=11cm, minimum height=5cm] at (7.5cm,-0.5cm) {};
 
-    \node (m) [l1] at (0,4.5) {\headerA{Model}};
-        \node (mf) [tc] at (0,4.0) {\headerB{Feature generation}};
-            \node (mf0) [right=2mm of mf.west] {};
-            \node (mf1) [below=of mf0.west, tc2] {top.\ time transform};
-            \node (mf2) [below=of mf1.west, tc2] {language 1-hot encoded};
-            \node (mf3) [below=of mf2.west, tc2] {auto.\ character features};
-            \node (mf4) [below=of mf3.west, tc2] {manual word features};
-        \node (mfB) [box, fit={(mf)(mf4)}] {};
-        \node (mm) [tc] at (5,4.0) {\headerB{Feature mixing}};
-            \node (mm1) [below=of mm.west , tc2] {~~fully conn.\ relu layers};
-            \node (mm2) [below=of mm1.west, tc2] {~~};
-            %\node (mm3) [below=of mm2.west, tc2] {~~};
-            %\node (mm4) [below=of mm3.west, tc2] {~~};
-        \node (mmB) [box, fit={(mm)(mm2)}] {};
-        \node (mp) [tc] at (10,4.0) {\headerB{Prediction loss}};
-            \node (mp0) [right=2mm of mp.west] {};
-            \node (mp1) [below=of mp0.west, tc2] {angular regression};
-            \node (mp2) [below=of mp1.west, tc2] {mixture of von mises};
-            \node (mp3) [below=of mp2.west, tc2] {least squares};
-            \node (mp4) [below=of mp3.west, tc2] {cross entropy};
-        \node (mpB) [box, fit={(mp)(mp4)}] {};
-    \begin{pgfonlayer}{background}
-        \node [box, fill=lightblue, fit={(m)(mfB)(mpB)}] {};
-    \end{pgfonlayer}
+    \node at (3.5cm,1.5cm) {\textcolor{darkblue}{UnicodeCNN}};
 
-    \node (tc1a) [coordinate, left=10mm of tc1.west] {};
-    \draw[us] (tc1.west) -- (tc1a) |- (mf3.west);
+    \node (clcnn) [box, draw=blue, opacity=0.5, fill=lightblue, minimum width=7cm, minimum height=2.5cm] at (9.25cm,0.25cm) {};
 
-    \node (tc2a) [coordinate, left=12mm of tc2.west] {};
-    \draw[us] (tc2.west) -- (tc2a) |- (mf2.west);
+    %\node (clcnn) [box, draw=blue, opacity=0.5, fill=lightblue, fit=(clcnn_label) (conv) (mix)] at (9.25cm,0.25cm) {};
+    \node (clcnn_label) at (7.25cm,1cm) {\textcolor{darkblue}{CLCNN \citep{zhang2015character}}};
 
-    \node (tc3a) [coordinate, left=14mm of tc3.west] {};
-    \draw[us] (tc3.west) -- (tc3a) |- (mf1.west);
+    \node (input) [box] at (0,0) {input  text};
+    \node (embed) [box, right=1cm of input.east] {character\\embedding};
+    \node (conv) [box, right=of embed.east] {convolutional\\layers};
 
-    \node (mf2a) [coordinate, right=2mm of mf2.east] {};
-    \node (mm1a) [coordinate, left=10mm of mm1.south] {};
-    \node (mm1a2) [coordinate, below=2.2mm of mm1a] {};
-    \draw[us] (mf1.east) -| (mf2a) -- (mm1a2) -- (mm1a);
-    \draw[us] (mf2.east) -| (mf2a) -- (mm1a2) -- (mm1a);
-    \draw[us] (mf3.east) -| (mf2a) -- (mm1a2) -- (mm1a);
+    \node (conv2) [right=1.5mm of conv.east, minimum height=1.3cm] {};
 
-    \node (mp2c) [coordinate, left=4mm of mp2.west] {};
-    \node (mm1b) [coordinate, right=10mm of mm1.south] {};
-    \node (mm1b2) [coordinate, below=2.2mm of mm1b] {};
-    \draw[us] (mm1b) -- (mm1b2) -- (mp2c) |- (mp1);
-    \draw[us] (mm1b) -- (mm1b2) -- (mp2c) |- (mp2);
-    \draw[us] (mm1b) -- (mm1b2) -- (mp2c) |- (mp4);
+    \node (lang) [box, below=7mm of conv2.south] {language\\estimator};
+    %\node (lang_f1) [box, below=of conv.south] {fully connected};
+    %\node (lang_f2) [box, below=of lang_f1.south] {fully connected};
+    %\node (lang) [output,below=of lang_f2.south] {language cross entropy};
 
-    \node (mp4a) [coordinate, right=24mm of mp4.east] {};
-    \node (tp1a) [coordinate, right=8mm of tp1.east] {};
-    %\draw[->] (mp4) -- (mp4a) |- (tp1a) |- (tp1);
-    %\draw[->] (mp4) -- (mp4a) |- (tp1a) |- (tp2);
+    \node (mix) [box, right=of conv.east] {feature  mixing};
+    %\node (pos_f1) [box, right=of conv.east] {fully connected};
+    %\node (pos_f2) [box, right=of pos_f1.east] {fully connected};
+    \node (output) [right=23mm of mix.east] {};
+    \node (country) [output, above =of output.east] {country\\cross entropy};
+    \node (fvm) [output, below =of output.east] {mixture of\\Fisher-von Mises};
 
-    \node (mp2a) [coordinate, right=8mm of mp2.east] {};
-    \node (mp2b) [coordinate, right=12mm of mp2a.east] {};
-    \draw[us] (mp1.east) -| (mp2a) -- (mp2b) |- (tp3);
-    \draw[us] (mp2.east) -| (mp2a) -- (mp2b) |- (tp3);
+    \draw[->] (input) -- (embed);
+    \draw[->] (embed) -- (conv);
+    \draw[->] (conv) -- (mix);
+    \draw[->] (mix) -- (country);
+    \draw[->] (mix) -- (fvm);
+    \draw[->] (conv.225) to[out=270,in=180] (lang);
+    \draw[->] (lang) to[out=0,in=270] (mix.315);
 
-    \node (tc1a2) [coordinate, left=8mm of tc1.west] {};
-    \draw[them] (tc1.west) -- (tc1a2) |- (mf4.west);
-
-    \node (mp4a) [coordinate, left=2mm of mp4] {};
-    \draw[them] (mf4.east) -- (mp4a) |- (mp4.west);
-    \draw[them] (mf4.east) -- (mp4a) |- (mp3.west);
-
-    \node (mp3b) [coordinate, right=27mm of mp3.east] {};
-    \draw[them] (mp3.east) -- (mp3b) |- (tp3.east);
-    
-    \node (mp4b) [coordinate, right=25mm of mp4.east] {};
-    \draw[them] (mp4.east) -- (mp4b) |- (tp1.east);
+    %\draw[->] (conv) -- (pos_f1);
+    %\draw[->] (pos_f1) -- (pos_f2);
+    %\draw[->] (pos_f2) -- (country);
+    %\draw[->] (pos_f2) -- (fvm);
+    %\draw[->] (conv) -- (lang_f1);
+    %\draw[->] (lang_f1) -- (lang_f2);
+    %\draw[->] (lang_f2) -- (lang);
+    %\draw[->] (lang) to [out=0,in=270] (pos_f1);
 
 \end{tikzpicture}
+
