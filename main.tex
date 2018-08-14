@@ -1,5 +1,5 @@
 %\documentclass{article}
-\documentclass[sigconf,anonymous,review,10pt]{acmart}
+\documentclass[sigconf,anonymous,review]{acmart}
 
 \setcopyright{rightsretained}
 %\acmDOI{10.475/123_4}
@@ -25,7 +25,7 @@
 \usepackage[greek,vietnamese,russian,arabic,english]{babel}
 \usepackage{CJKutf8}
 
-
+\usepackage{libertine}
 
 % needed unicode character hacks
 %\newcommand\dottedcircle{\tikz \draw [line cap=round, line width=0.25ex, dash pattern=on 0pt off 2pt] (0,0) circle [radius=0.75ex];}
@@ -171,7 +171,9 @@
 
 %\title{Geolocating Tweets in any Language at any Location}
 %\title{A Universal Language Model with Application to Tweet Geolocation}
-\title{Highly Multilingual Tweet Geolocation with \\ Unicode Convolutional Neural Networks}
+%\title{Highly Multilingual Tweet Geolocation with \\ Unicode Convolutional Neural Networks}
+%\title{Geolocating Tweets in any Language at any Location\\with Unicode Convolutional Neural Networks\\and Mixtures of Fisher-von Mises Distributions}
+\title{Geolocating Tweets in any Language at any Location\\with the UnicodeCNN and MFvM distribution}
 %\titlenote{Produces the permission block, and copyright information}
 %\subtitle{}
 %\subtitlenote{The full version of the author's guide is available as \texttt{acmart.pdf} document}
@@ -199,11 +201,21 @@
     %We make no assumption that the text's language is known in advance,
     %and we allow the language to change arbitrarily mid-sentence.
     We demonstrate the UnicodeCNN's effectiveness on the challenging task of content-based tweet geolocation using a dataset with 900 million tweets written in more than 100 languages.
-    %Our model predicts a tweet's location more than \fixme{450km} more accurately than previous state-of-the-art.
+    Whereas previous work restricted itself to predicting a tweet's country or city of origin 
+    (and only worked on tweets written in certain languages from highly populated cities),
+    we predict the exact GPS locations of tweets 
+    (and our method works on tweets written in any language sent from anywhere in the world).
+    %To predict GPS locations, we introduce a novel output layer for neural networks we call the mixture of Fisher-von Mises (FvM) layer.
+    To predict these GPS coordinates,
+    we introduce a novel output layer using the \defn{mixture of Fisher-von Mises} (MFvM) distribution.
+    The MFvM exploits the Earth's spherical geometry to improve predictions,
+    whereas all previous geolocation work has ignored the Earth's geometry.
+    By combining the UnicodeCNN and the MFvM,
+    we create a model that on average predicts a tweet's location more than 300km more accurately than previous state-of-the-art.
     %To validate our approach, we consider the task of determining the GPS coordinates that a tweet was sent from based only on its message contents.
     %Our dataset contains 900 million tweets written in more than 100 languages.
     %We show that the UnicodeCNN significantly outperforms baseline best-practices when working with English-only text.
-    Remarkably, the UnicodeCNN can learn geographical knowledge in one language and automatically transfer that knowledge to other languages.
+    Remarkably, we further show that the UnicodeCNN can learn geographical knowledge in one language and automatically transfer that knowledge to other languages.
     %(ii) we predict exact GPS coordinates, whereas previous work predicted only country or city of origin;
     %(iii) we 
     %Due to the high-quality features of the UnicodeCNN,
