@@ -22,7 +22,7 @@
 \usepackage{rotating}
 \usepackage{xcolor}
 \usepackage[utf8]{inputenc}
-\usepackage[greek,vietnam,russian,arabic,english]{babel}
+\usepackage[greek,vietnamese,russian,arabic,english]{babel}
 \usepackage{CJKutf8}
 
 % needed unicode character hacks
@@ -197,6 +197,7 @@
     %We make no assumption that the text's language is known in advance,
     %and we allow the language to change arbitrarily mid-sentence.
     We demonstrate the UnicodeCNN's effectiveness on the challenging task of content-based tweet geolocation using a dataset with 900 million tweets written in more than 100 languages.
+    %Our model predicts a tweet's location more than \fixme{450km} more accurately than previous state-of-the-art.
     %To validate our approach, we consider the task of determining the GPS coordinates that a tweet was sent from based only on its message contents.
     %Our dataset contains 900 million tweets written in more than 100 languages.
     %We show that the UnicodeCNN significantly outperforms baseline best-practices when working with English-only text.
@@ -856,7 +857,7 @@ A code point is a number (written as \str{U+} the number in hexadecimal)
 that represents either a character or formatting command.
 For example, the code point \str{U+004F} represents the Latin uppercase \str{O}.
 Complex characters can be encoded directly or as a combination of simple letters plus formatting commands called \defn{marks}.
-For example, the Vietnamese character \str{\foreignlanguage{vietnam}{Ớ}} can be represented by the single code point \str{U+1EDA},
+For example, the Vietnamese character \str{\foreignlanguage{vietnamese}{Ớ}} can be represented by the single code point \str{U+1EDA},
 %or by the sequence of code points \str{U+004F} (\str{O}) \str{U+031B} (\str{◌̛}) \str{U+0301} (\str{◌́}).
 or by the sequence of code points \str{U+004F} (Latin uppercase \str{O}) \str{U+031B} (combining horn) \str{U+0301} (combining acute accent),
 or a number of other strings.
@@ -940,7 +941,7 @@ We determine the number of rows a code point occupies as follows:
 If the code point is not a letter, then it gets a single row in the encoding matrix.
 Otherwise, we first transliterate the letter into the Latin script.
 The number of characters in the transliteration is the number of rows the code point gets in the matrix.
-For example, the Vietnamese character \str{\foreignlanguage{vietnam}{Ớ}} is transliterated into \str{O} and so gets only a single row,
+For example, the Vietnamese character \str{\foreignlanguage{vietnamese}{Ớ}} is transliterated into \str{O} and so gets only a single row,
 but the Chinese character \begin{CJK}{UTF8}{min}東\end{CJK} gets transliterated into \str{dong} and so occupies 4 rows.
 
 The contents of each row are set so that similar letters will generate similar rows.
