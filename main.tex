@@ -1337,6 +1337,7 @@ and these are passed to the output layers.
 %%%%%%%%%%%%%%%%%%%%
 
 \subsection{Model Output}
+\label{sec:outputs}
 
 To geolocate tweets, we connect two types of output layers to the UnicodeCNN that model tweet location at different levels of granularity.
 
@@ -1569,7 +1570,7 @@ additionally remove non-English tweets and so are considerably smaller.
 For each tweet in our dataset, we associate a country and GPS coordinates using the Twitter API.
 The Twitter API defines a total of 247 unique country codes that a tweet can be sent from.
 This number is larger than the number of sovereign states recognized by the United Nations (206)
-because many non-countries (e.g.\ Puerto Rico and Hong Kong) are given country codes.
+because many non-countries are given country codes (e.g.\ Puerto Rico and Hong Kong).
 The process of assigning GPS coordinates is slightly more complicated.
 User privacy settings allow Twitter to share the exact GPS coordinates of approximately 16\% of tweets in our dataset.
 For the remaining tweets, Twitter only provides the city of origin.
@@ -1616,8 +1617,8 @@ Our method of using the GPS coordinates preserves as much information from the t
 \item[Baseline Models.]
 
 We compare our UnicodeCNN with three baseline models.
-All three models predict the country and gps coordinates a tweet was sent from,
-the only difference is the way the features are generated.
+All three models use multitask learning to predict both the country and gps coordinates a tweet was sent from as described in Section \ref{sec:outputs}.
+The only difference is the way the features are generated.
 
 The first model, \str{lang} uses only the language of the tweet 1-hot encoded as an input feature.
 This is the simplest reasonable model for the multilingual geolocation problem.
@@ -1674,7 +1675,7 @@ and we use the MvMF output layer to predict exact GPS coordinates.
 %\fixme{
 Many methods augment their bag-of-words models with additional features.
 For example, \citet{zhang2014geocoding} use \defn{gazeteers} 
-(databases that map place names to GPS coordinates) to improve the quality of prediction \citep{zhang2014geocoding}.
+(databases that map place names to GPS coordinates) to improve the quality of prediction. 
 Because these gazeteers are only available in English,
 they are not applicable in our highly multilingual domain,
 and we do not compare against this method.
@@ -1735,21 +1736,22 @@ Finally, our dataset is large enough that a single pass is sufficient to train t
 If multiple passes were needed, then the evaluated losses would no longer be unbiased estimates of the true loss after the first pass.
 
 We use several losses to evaluate the models' performance.
-The \defn{distance} measures the average distance between a tweet's true location and the point estimate given by the MvMF output.
-The \defn{accuracy @50km} is the percent of tweets whose distance error is less than 50km.
+The \defn{distance} measures the distance between a tweet's true location and the point estimate given by the MvMF output.
+The \defn{accuracy @50km} is the fraction of tweets whose distance error is less than 50km.
 The {accuracy @100km, @500km, 1000km, 2000km, and 3000km} measures are similar.
-Finally, the \defn{accuracy @country} measures the percent of tweets whose country of origin was correctly predicted.
+Finally, the \defn{accuracy @country} measures the fraction of tweets whose country of origin was correctly predicted.
 %Numeric results are shown in Table \ref{table:results}.
 Table \ref{table:results} shows numerical results for all baseline and all UnicodeCNN models evaluated on the full dataset.
 The Huge UnicodeCNN model geolocates tweets on average 367km closer to their true location than the \str{lang+time+bow} model.
 Table \ref{table:results:lang} compares the performance of these two models over different languages.
 For all languages, the Huge UnicodeCNN significantly outperforms the \str{lang+time+bow} model.
-The difference is most striking for those tweets with an Undefined language,
+The difference is most striking for those tweets that the Twitter API classifies as having an Unknown language,
 where the UnicodeCNN geolocates tweets an average of 1563km closer.
-Recall that a tweet gets labelled as Undefined if the language is so infrequently used that it is not officially supported by Twitter,
+Recall that a tweet gets labelled as Unknown if the language is so infrequently used that it is not officially supported by Twitter,
 or the text is too short.
 These are the hardest tweets to geolocate,
-they comprise approximately 8\% of all tweets,
+and the tweets worst served by current state-of-the-art.
+They comprise approximately 7.4\% of all tweets,
 or 40 million tweets per day.
 
 To train the UnicodeCNN models,
@@ -1796,11 +1798,10 @@ We trained 20 versions of each model and report only the best model.
 
 \section{Conclusion}
 
-\fixme{
-We have introduced it to the UnicodeCNN and used it to achieve state-of-the-art results for content-based tweet geolocation.
-A key reason for our good results was the large dataset of 900 million labeled tweets and computational resources.
-We hope that the features learned in this task will provide a good source for transfer learning.
-}
+We have introduced the UnicodeCNN and used it to achieve state-of-the-art results for content-based tweet geolocation.
+A key reason for our good results is our large dataset of 900 million labeled tweets which we used to train our model.
+Collecting geolocated tweets is much easier than collecting quality labelled data for most other prediction tasks.
+%We hope that the features learned in this task will provide a good source for transfer learning.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ignore{
