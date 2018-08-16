@@ -34,23 +34,23 @@
     %\node (clcnn) [box, draw=blue, opacity=0.5, fill=lightblue, fit=(clcnn_label) (conv) (mix)] at (9.25cm,0.25cm) {};
     \node (clcnn_label) at (7.25cm,1cm) {\textcolor{darkblue}{CLCNN \citep{zhang2015character}}};
 
-    \node (input) [box] at (0,0) {input  text};
-    \node (embed) [box, right=1cm of input.east] {character\\encoder};
-    \node (conv) [box, right=of embed.east] {convolutional\\layers};
+    \node (input) [box] at (0,0) {Input Text};
+    \node (embed) [box, right=1cm of input.east] {Character\\Encoder};
+    \node (conv) [box, right=of embed.east] {Convolutional\\Layers};
 
     \node (conv2) [right=1.5mm of conv.east, minimum height=1.3cm] {};
 
-    \node (lang) [box, below=7mm of conv2.south] {language\\estimator};
+    \node (lang) [box, below=7mm of conv2.south] {Language\\Estimator};
     %\node (lang_f1) [box, below=of conv.south] {fully connected};
     %\node (lang_f2) [box, below=of lang_f1.south] {fully connected};
     %\node (lang) [output,below=of lang_f2.south] {language cross entropy};
 
-    \node (mix) [box, right=of conv.east] {feature  mixing};
+    \node (mix) [box, right=of conv.east] {Feature Mixing};
     %\node (pos_f1) [box, right=of conv.east] {fully connected};
     %\node (pos_f2) [box, right=of pos_f1.east] {fully connected};
     \node (output) [right=23mm of mix.east] {};
-    \node (country) [output, above =of output.east] {country\\cross entropy};
-    \node (fvm) [output, below =of output.east] {mixture of\\Fisher-von Mises};
+    \node (country) [output, above =of output.east] {Country\\Cross Entropy};
+    \node (fvm) [output, below =of output.east] {Mixture of\\von Mises-Fisher};
 
     \draw[->] (input) -- (embed);
     \draw[->] (embed) -- (conv);
