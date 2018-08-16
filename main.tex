@@ -459,16 +459,17 @@ We open source our model and a toolkit to help practitioners use this model as t
 \begin{description}
 \item[Paper Outline.]
 The next section qualitatively illustrates the advantage of the UnicodeCNN over other models.
-We show specific linguistic properties that the UnicodeCNN is sensitive to that no word-level model can support.
+We show specific linguistic properties that the UnicodeCNN is sensitive to that no word-level model can detect.
 %Then in Section \ref{sec:words} we describe in detail why the word-level approach of previous geolocation systems cannot scale to the massively multilingual dataset we use.
 %In Section \ref{sec:model} we introduce our character level model that fixes the deficiencies of the world-level models.
 %We also describe two novel neural network output layers called angualar regression and the mixture of von-Mises,
 %and show how these methods take advantage of the geometry of the Earth's surface to enable us to predict exact GPS coordinates of a tweet.
 %Section \ref{sec:experiments} shows the experimental results showing that our method significantly outperforms previous methods.
-Section \ref{sec:model} describes the UnicodeCNN and our novel mixture of von Mises-Fisher layer for predicting GPS coordinates.
+Section \ref{sec:model} describes the UnicodeCNN and our novel MvMF output layer for predicting GPS coordinates.
 Section \ref{sec:experiments} describes our dataset of 900 million tweets,
 baseline comparison models,
 and our experimental results.
+%We conclude with a discussion about how to apply the UnicodeCNN and MvMF to other domains.
 \end{description}
 
 
@@ -538,8 +539,8 @@ and the plot below shows the model's top three predicted countries and associate
     \begin{tikzpicture}
         [ every text node part/.style={align=center}
         ]
-        \node at (0,0) {\resizebox{0.45\textwidth}{!}{\input{img/infer/es-vosotros-hablar/0-good-zoom.pgf}}};
-        %\node at (0,0) {\resizebox{0.45\textwidth}{!}{\includegraphics{img/infer/es-vosotros-hablar/0-good-zoom}}};
+        %\node at (0,0) {\resizebox{0.45\textwidth}{!}{\input{img/infer/es-vosotros-hablar/0-good-zoom.pgf}}};
+        \node at (0,0) {\resizebox{0.45\textwidth}{!}{\includegraphics{img/infer/es-vosotros-hablar/0-good-zoom}}};
         \node (true) at (-3,-1.2) {\textcolor{black}{\textbf{true}}\\\textcolor{black}{\textbf{location}}};
         \node[shape=circle,inner sep=0,minimum width=0.2cm,fill=black] (dot) at (-0.61,-0.975) {};
         \draw[->,line width=1pt] (true.0) to (dot);
@@ -745,7 +746,7 @@ Translated fully into English, this tweet reads:
 For this tweet, there is no need to analyze subtle linguistic clues to determine where the tweet was sent from because the location is written directly in the text.
 To identify this tweet's location, all we need to do is understand that the Arabic word 
 \foreignlanguage{arabic}{الكويت}
-is the country Kuwait.
+refers to the country Kuwait.
 The UnicodeCNN successfully learns this fact. 
 Its top three predicted countries and associated probabilites are:
 %and its top predicted countries are
@@ -886,7 +887,7 @@ and Table \ref{table:hyperparam} summarizes their differences.
 The output of the UnicodeCNN is a set of application agnostic features.
 For our geolocation application we use a standard cross entropy layer to estimate the country and our novel mixture of von Mises-Fisher layer to estimate the GPS location.
 Other output layers can easily be used for other applications,
-and we open source our model's weights to facilitate transfer learning between applications \citep{wang2015transfer}.
+and we open source our model's weights to facilitate transfer learning between applications. % \citep{wang2015transfer}.
 %by either training from scratch or using transfer learning \citep{wang2015transfer,howard2018fine}.
 %We will re
 
@@ -950,7 +951,7 @@ or a number of other strings.
 Each of these strings is \defn{semantically equivalent},
 because they represent the same character.
 
-For each code point, the Unicode standard \citep{Unicode} associates important linguistic information which the UnicodeCNN's character encoder will exploit.
+For each code point, the Unicode standard \citep{Unicode} associates important linguistic information that the UnicodeCNN's character encoder will exploit.
 \defn{Normalization strategies} are methods for converting between semantically equivalent strings;
 \defn{transliterations} are methods for converting between different alphabets;
 and \defn{character properties} is the generic Unicode term for other information associated with a code point. 
@@ -1127,7 +1128,7 @@ This procedure can be thought of as an advanced form of feature hashing \citep{w
     Column $60+r$ is then set to 1 and all others to 0.
     As with columns 14-29,
     these columns will have many collisions and can be thought of as feature hashing \citep{weinberger2009feature} at the character level.
-    As $d$ increases, the capacity of the encoding matrix to represent more characters distinctly increases, and we expect better training performance.
+    As $d$ increases, the number of collisions decreases, and we expect better training performance.
     As shown in Table \ref{table:hyperparam}, the small and large models use $d=128$ and the huge model uses $d=256$.
 \end{description}
 
@@ -1153,22 +1154,6 @@ These difficulties are most pronounced in East Asian languages,
 and a more sophisticated transliteration scheme could therefore possibly improve performance for these languages.
 }
 
-\begin{table}
-    \begin{tabular}{l|ccc}
-        Hyperparameter & Small & Large & Huge \\
-        \hline
-        & \\ [-1.0em] 
-        encoding size ($d$) & 128 & 128 & 256 \\
-        convolutional channels & 256 & 1024 & 2048 \\
-        feature mixing layer size & 1024 & 2048 & 4096 \\
-    \end{tabular}
-    \textbf{
-    \caption{
-        Hyperparameters for the three variants of the UnicodeCNN.
-        \label{table:hyperparam}
-    }}
-\end{table}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \item[Convolutional Layers.]
@@ -1178,7 +1163,7 @@ and a more sophisticated transliteration scheme could therefore possibly improve
     and a full description is beyond the scope of this paper.
     Here, we briefly describe the intuition behind these convolutional layers and state the parameters that we use.
     We refer the reader to the \emph{Deep Learning Book} \citep{Goodfellow-et-al-2016} and 
-    the original paper on character level convolutional neural networks (CLCNNs) \citep{zhang2015character} for mathematical details.
+    the original paper on CLCNNs \citep{zhang2015character} for mathematical details.
 
     Intuitively, a convolutional layer generates a new ``higher level'' set of features from the input ``low level'' features.
     These higher level features are known to be robust to small variations in spelling.
@@ -1245,13 +1230,13 @@ and a more sophisticated transliteration scheme could therefore possibly improve
 %We chose to base our convolutional layers on the CLCNN model \citep{},
 %but other reasonable alternatives exist as well.
 
-It is possible to replace the CLCNN convolutional layers we use with alternative deep learning architectures designed for character-level processing.
+It is possible to replace the CLCNN convolutional layers we use with alternative architectures designed for character-level processing.
 Alternative architectures have proposed using deeper convolutional layers with resnet connections \citep{conneau2017very}, 
 recurrent neural networks \citep{chung2016character}, 
 or complex combinations of convolutional and recurent networks \citep{kim2016character,jozefowicz2016exploring}.
 Each of these techniques requires considerable processing resources, however, 
 so we do not exhaustively compare these techniques against each other.
-(Training the Huge UnicodeCNN requires an estimated 90 GPU-months as described in Section \ref{sec:experiments},
+(Training the Huge UnicodeCNN requires an estimated 90 GPU-weeks as described in Section \ref{sec:experiments},
 and the alternative models are similarly computationally expensive.)
 We chose to base our model off of the CLCNN's convolutional layers because it had the best performance on initial tests using a small held-out subset of tweets.
 We speculate that convolutions perform better than recurrent networks on twitter analysis because tweets are guaranteed to be short,
@@ -1285,6 +1270,26 @@ and the first multilingual dataset.
 %\item[Word-level features.]
 %All previous work on twitter geolocation has essentially relied on hand-crafted world-level features.
 %\citet{han2012geolocation} study a method of determining location indicative words using an information gain strategy.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{table}
+    \begin{tabular}{l|ccc}
+        Hyperparameter & Small & Large & Huge \\
+        \hline
+        & \\ [-1.0em] 
+        encoding size ($d$) & 128 & 128 & 256 \\
+        convolutional channels & 256 & 1024 & 2048 \\
+        feature mixing layer size & 1024 & 2048 & 4096 \\
+    \end{tabular}
+    \textbf{
+    \caption{
+        Hyperparameters for the three variants of the UnicodeCNN.
+        \label{table:hyperparam}
+    }}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \item[Language Encoder.]
     The output of the convolutional layers is passed to two fully connected \defn{rectified linear unit} (ReLU) layers.
@@ -1389,7 +1394,7 @@ and these are passed to the output layers.
 \subsection{Model Output}
 \label{sec:outputs}
 
-To geolocate tweets, we connect two types of output layers to the UnicodeCNN that model tweet location at different levels of granularity.
+To geolocate tweets, we connect two types of output layers to the UnicodeCNN that model location at different levels of granularity.
 
 \begin{description}
 
@@ -1397,8 +1402,8 @@ To geolocate tweets, we connect two types of output layers to the UnicodeCNN tha
         This output predicts the tweet's country of origin.
         Determining this country is a standard classification problem,
         and we therefore use the standard softmax cross entropy loss.
-        Our primary interest is in estimating the exact GPS coordinates using the Mixture of von Mises-Fisher output described below,
-        but we observed that jointly modeling both the country and the GPS coordinates accelerated training.
+        Our primary goal is to estimate the exact GPS coordinates using the Mixture of von Mises-Fisher output described below,
+        but we observed that jointly optimizing both the country and the GPS coordinates accelerated training.
         Using multiple related outputs is commonly called \defn{multitask learning} and is a well known technique for accelerating training \citep{zhang2017survey}.
         No previous work on tweet geolocation used multitask learning.
 
@@ -1449,8 +1454,8 @@ To geolocate tweets, we connect two types of output layers to the UnicodeCNN tha
             \text{MvMF}(\x;\boldsymbol{\mu},\boldsymbol{\kappa},\w) = \prod_{i=1}^q \text{vMF}(\x;\boldsymbol\mu_i,\boldsymbol\kappa_i)^{\w_i}
         \end{equation}
         where 
-        $\boldsymbol\mu$ is a vector of $q$ mean directions,
-        $\boldsymbol\kappa$ is a vector of $q$ concentration parameters,
+        $\boldsymbol\mu$ is an array of $q$ mean directions,
+        $\boldsymbol\kappa$ is an array of $q$ concentration parameters,
         %and each mixture distribution $i$ has its own mean direction $\mu_i$ and concentration parameter $\kappa_i$, 
         and $\w$ is a vector of mixture weights satisfying
         $\w_i\in(0,1)$ and $\sum_{i=1}^q \w_i = 1$.
@@ -1480,7 +1485,7 @@ To geolocate tweets, we connect two types of output layers to the UnicodeCNN tha
         Figure \ref{fig:poder} plots the density of an example distribution.
         A point estimate can be computed using the maximum likelihood:
         \begin{equation}
-            \hat\x = \argmax_{\x\in\mathbb{S}^2} \text{MvMF}(\x).
+            \hat\x = \argmax_{\x\in\mathbb{S}^2} \text{MvMF}(\x;\boldsymbol\mu,\boldsymbol\kappa,\boldsymbol\w).
         \end{equation}
         In our experiments below, we measure the quality of our point estimate by measuring the distance between the tweet's true location and $\hat\x$ on the surface of the sphere using Vincenty's numerically stable distance formula \citep{vincenty1975direct}.
 
@@ -1616,8 +1621,8 @@ which contains only $23$ million tweets written by $2.1$ million users.
 WORLD+ML includes tweets in all languages,
 but removes hard-to-geolocate tweets that are not close to major cities.
 Whereas the WORLD+ML dataset contained only 47\% non-English tweets,
-our dataset contains 68\% non-English tweets.
-Other datasets such as the WNUT \citep{han2016twitter}, WORLD \citep{han2012geolocation}, and NA \citep{roller2012supervised}
+our dataset contains 58\% non-English tweets.
+Other datasets such as WNUT \citep{han2016twitter}, WORLD \citep{han2012geolocation}, and NA \citep{roller2012supervised}
 additionally remove non-English tweets and so are considerably smaller.
 
 For each tweet in our dataset, we associate a country and GPS coordinates using the Twitter API.
@@ -1632,8 +1637,8 @@ There are approximately 3 million unique city-level locations in our dataset.
 The WNUT \citep{han2016twitter}, WORLD \citep{han2012geolocation}, and WORLD+ML \citep{han2014text} datasets generated class labels using a complex procedure to:
 (i) select approximately the 3000 most populated of these cities,
 (ii) combine them with nearby cities into a single metropolitan area which serves as the class label,
-and (iii) discard all tweets from cities not from these metropolitan areas.
-Clearly, significant amounts of information are lost when creating class labels in this way.
+and (iii) discard all tweets not from these metropolitan areas.
+Clearly, significant amounts of information is lost when creating class labels in this way as the transformation is not reversible.
 Our method of using the GPS coordinates preserves as much information from the tweet as possible and creates a more challenging prediction problem.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1738,7 +1743,7 @@ Other methods use the social graph or metadata associated with each tweet to imp
 %And the social graph \citep{}.
 %Incorporating this additional information significantly improves geolocation performance.
 We do not compare against these methods because our focus is only on content-based geolocation.
-Considering other features would obscure the impact of the tweet's text on the predicted location.
+Considering other non-content features would obscure the impact of the tweet's text on the predicted location.
 %}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1776,13 +1781,13 @@ That is, we perform only a single pass over the dataset.
 For each tweet, we first compute the loss of the model on that tweet;
 then we update the model's parameters.
 The total loss is then the sum of the individual tweet losses.
-The online learning is a standard learning paradigm (see for example \citep{understandingml}),
+Online learning is a standard learning paradigm \citep[e.g.][]{understandingml},
 and we emphasize that at all time steps our evaluated losses are unbiased estimates of the model's true loss.
 We choose online evaluation rather than the more popular batch evaluation (i.e.\ with a train/test split) for three reasons.
 First, training and evaluating the bigger UnicodeCNN models is extremely computationally expensive 
 (many weeks using parallel computing as described below).
 Many of the computations between the Adam parameter update and loss computation can be shared,
-and so the total amount of computation is reduced.
+and so the total amount of computation is reduced in the online setting.
 Second, online evaluation is a natural model for tweet geolocation because new data can easily be obtained.
 The train/test split experimental method was designed for situations with limited training data where obtaining new evaluation data is difficult.
 Finally, our dataset is large enough that a single pass is sufficient to train the models to convergence.
@@ -1805,7 +1810,7 @@ or the text is too short.
 These are the hardest tweets to geolocate,
 and the tweets worst served by current state-of-the-art.
 They comprise approximately 7.4\% of all tweets,
-or 40 million tweets per day.
+which is about 40 million tweets per day.
 
 To train the UnicodeCNN models,
 we use a single machine with 16 CPUs, 64 GB of RAM, and 6 NVidia Titan x80 GPUs. 
@@ -1825,6 +1830,7 @@ We estimate that training the huge model on the full dataset would take about 15
 We expect the huge model's performance would continue to slightly improve given more training time.
 %Due to the extreme computational requirements of this model,
 %we do not compare against the naive 
+An ablative study comparing all possible character encodings and model architectures discussed in Section \ref{sec:model} is clearly infeasible when model training is so expensive.
 
 All baseline models were trained using Adam \citep{kingma2014adam} and random hyperparameter search \citep{bergstra2012random}.
 Random hyperparameter search is a state-of-the-art hyperparameter tuning method that requires no manual intervention and works well when there is more than one hyperparameter to tune.
@@ -1840,8 +1846,9 @@ We trained 20 versions of each model and report only the best model.
     \input{img/tables/versus2}
     \textbf{
     \caption{
-        Ten most popular languages as labelled by the Twitter API.
+        The performance of the best baseline and UnicodeCNN models across the ten most popular languages as labelled by the Twitter API.
         The Huge UnicodeCNN significantly outperforms the \str{lang+time+bow} baseline model on all languages.
+        Notice the dramatic improvement for tweets with unknown language.
         \label{table:results:lang}
     }
     }
